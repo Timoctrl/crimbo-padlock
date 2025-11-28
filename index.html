@@ -39,7 +39,7 @@
       justify-content: center;
     }
 
-    /* Bigger, tilt-able snow layer */
+    /* BIGGER, TILT-ABLE SNOW */
     .snow {
       pointer-events: none;
       position: fixed;
@@ -57,7 +57,6 @@
       will-change: transform, background-position;
     }
 
-    /* Simple downwards fall; sideways drift is added by JS via transform */
     @keyframes snow-fall {
       0% {
         background-position: 0 0, 0 0, 0 0, 0 0, 0 0;
@@ -67,21 +66,21 @@
       }
     }
 
+    /* PADLOCK FRAME */
     .padlock {
       position: relative;
       width: 100%;
-      padding: 44px 24px 60px;
-      background: linear-gradient(145deg, #b62026, #7b1119);
-      border-radius: 26px;
+      padding: 70px 26px 64px;
+      background: radial-gradient(circle at top, #221215 0, #120608 40%, #050105 100%);
+      border-radius: 30px;
       box-shadow:
         0 22px 44px rgba(0, 0, 0, 0.9),
-        0 0 22px rgba(255, 215, 128, 0.45);
+        0 0 22px rgba(0, 0, 0, 0.8);
       text-align: center;
       transition: transform 0.4s ease, box-shadow 0.4s ease;
       z-index: 1;
       transform-origin: center bottom;
       animation: padlock-in 0.6s ease-out both;
-      border: 2px solid rgba(255, 230, 170, 0.4);
     }
 
     @keyframes padlock-in {
@@ -99,42 +98,43 @@
       transform: translateY(-4px) scale(1.02);
       box-shadow:
         0 26px 52px rgba(0, 0, 0, 0.95),
-        0 0 28px rgba(255, 235, 170, 0.95);
+        0 0 30px rgba(255, 235, 170, 0.95);
     }
 
+    /* METAL SHACKLE */
     .shackle {
       position: absolute;
-      top: -60px;
+      top: -40px;
       left: 50%;
-      width: 90px;
-      height: 72px;
-      border: 8px solid #eee;
+      width: 110px;
+      height: 90px;
+      border: 10px solid #e9edf0;
       border-bottom: none;
-      border-radius: 60px 60px 0 0;
-      background: radial-gradient(circle at top, #ffffff, #cfcfcf);
+      border-radius: 70px 70px 0 0;
+      background: radial-gradient(circle at top, #ffffff, #cfd3d8);
       transform: translateX(-50%);
       transition: transform 0.6s ease;
       transform-origin: left bottom;
-      box-shadow: 0 10px 14px rgba(0, 0, 0, 0.7);
+      box-shadow: 0 10px 16px rgba(0, 0, 0, 0.75);
     }
 
     .padlock.open .shackle {
-      transform: translate(-30px, -30px) rotate(-24deg);
+      transform: translate(-32px, -40px) rotate(-26deg);
     }
 
     .holly {
       position: absolute;
-      top: -18px;
-      right: 16px;
-      font-size: 24px;
+      top: -8px;
+      right: 34px;
+      font-size: 26px;
       transform: rotate(8deg);
       text-shadow: 0 0 6px rgba(0, 0, 0, 0.8);
     }
 
     .name-tag {
       position: absolute;
-      left: 16px;
-      top: -8px;
+      left: 34px;
+      top: -4px;
       padding: 4px 10px;
       background: #ffe9b3;
       color: #5b1c21;
@@ -153,15 +153,18 @@
       opacity: 0.9;
     }
 
+    /* GOLDEN PADLOCK BODY */
     .lock-body {
-      margin-top: 12px;
-      padding: 20px 16px 26px;
-      background: radial-gradient(circle at top, #283c2f, #101b13 55%, #050806 100%);
-      border-radius: 18px;
+      margin: 0 auto;
+      max-width: 340px;
+      padding: 20px 18px 30px;
+      background: linear-gradient(180deg, #f8dd9c, #c89339 55%, #a36c1e 100%);
+      border-radius: 22px;
       box-shadow:
-        inset 0 0 18px rgba(0, 0, 0, 0.9),
-        0 0 8px rgba(255, 255, 255, 0.15);
+        0 10px 18px rgba(0, 0, 0, 0.8),
+        inset 0 0 16px rgba(0, 0, 0, 0.45);
       position: relative;
+      border: 1px solid rgba(255, 245, 215, 0.8);
     }
 
     .lock-body::before {
@@ -169,9 +172,10 @@
       position: absolute;
       inset: 0;
       border-radius: inherit;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.3);
       pointer-events: none;
+      opacity: 0.9;
     }
 
     .title {
@@ -180,6 +184,7 @@
       text-transform: uppercase;
       margin-bottom: 3px;
       opacity: 0.95;
+      color: #3a1c08;
     }
 
     .subtitle {
@@ -187,15 +192,27 @@
       letter-spacing: 0.28em;
       text-transform: uppercase;
       margin-bottom: 16px;
-      color: #ffd9a8;
+      color: #5a310f;
       opacity: 0.9;
+    }
+
+    /* DARK FACE WHERE THE DIALS SIT */
+    .dial-face {
+      padding: 16px 14px 18px;
+      background: radial-gradient(circle at top, #283c2f, #101b13 55%, #050806 100%);
+      border-radius: 14px;
+      box-shadow:
+        inset 0 0 18px rgba(0, 0, 0, 0.9),
+        0 0 8px rgba(0, 0, 0, 0.6);
+      position: relative;
+      border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
     .dials {
       display: flex;
       justify-content: center;
       gap: 10px;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
 
     .dial {
@@ -262,11 +279,28 @@
       touch-action: none; /* stop page scroll on drag target */
     }
 
+    /* KEYHOLE */
+    .keyhole {
+      position: absolute;
+      bottom: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 18px;
+      height: 26px;
+      border-radius: 10px;
+      background: radial-gradient(circle at 50% 25%, #222 0, #000 45%, transparent 46%),
+                  linear-gradient(180deg, #000 50%, transparent 50%);
+      box-shadow:
+        0 0 4px rgba(0, 0, 0, 0.9),
+        inset 0 0 4px rgba(255, 255, 255, 0.08);
+    }
+
     .hint {
-      margin-top: 10px;
+      margin-top: 8px;
       font-size: 13px;
       opacity: 0.82;
       line-height: 1.5;
+      color: #ffe9c0;
     }
 
     .hint span {
@@ -281,8 +315,8 @@
       opacity: 0;
       transform: translateY(10px);
       transition: opacity 0.6s ease, transform 0.6s ease;
-      color: #ffe9b3;
-      text-shadow: 0 0 8px rgba(255, 215, 128, 0.7);
+      color: #4c2406;
+      text-shadow: 0 0 8px rgba(255, 215, 128, 0.9);
     }
 
     .padlock.open .message {
@@ -297,7 +331,7 @@
       font-weight: 400;
       margin-top: 8px;
       opacity: 0.9;
-      color: #d4f5d4;
+      color: #234718;
     }
 
     @keyframes glow-pulse {
@@ -314,12 +348,12 @@
 
     @media (max-width: 480px) {
       .padlock {
-        padding: 34px 18px 48px;
-        border-radius: 22px;
+        padding: 60px 18px 48px;
+        border-radius: 24px;
       }
 
       .lock-body {
-        padding: 16px 12px 22px;
+        padding: 18px 12px 28px;
       }
 
       .title {
@@ -358,7 +392,7 @@
 <body>
   <div class="snow"></div>
 
-  <!-- Unlock sound: put unlock.mp3 in the same folder as this file -->
+  <!-- Unlock sound: keep unlock.mp3 in the same folder -->
   <audio id="unlockSound" src="unlock.mp3" preload="auto"></audio>
 
   <div class="app-shell">
@@ -373,27 +407,30 @@
         <div class="title">ELLIE’S ESCAPE</div>
         <div class="subtitle">CHRISTMAS EDITION</div>
 
-        <div class="dials" id="dials"></div>
+        <div class="dial-face">
+          <div class="dials" id="dials"></div>
 
-        <div class="hint">
-          Ellie, drag or tap the dials to find the secret 6-letter word.
-          <span>When you crack it, your Christmas surprise will unlock…</span>
+          <div class="hint">
+            Ellie, drag or tap the dials to find the secret 6-letter word.
+            <span>When you crack it, your Christmas surprise will unlock…</span>
+          </div>
+
+          <div class="message" id="message"></div>
+          <div class="keyhole"></div>
         </div>
-
-        <div class="message" id="message"></div>
       </div>
     </div>
   </div>
 
   <script>
-    // ========== CONFIG ==========
-    const CODE = "GLOVES"; // secret 6-letter code
+    // ===== CONFIG =====
+    const CODE = "GLOVES";
 
     const SUCCESS_MESSAGE_MAIN = "Unlocked, Ellie! Merry Christmas!";
     const SUCCESS_MESSAGE_SUB =
       "You found the key – check inside the gloves.";
 
-    // ========== IMPLEMENTATION ==========
+    // ===== DIAL / LOCK LOGIC =====
     const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
     const dialsContainer = document.getElementById("dials");
     const padlockEl = document.getElementById("padlock");
@@ -402,9 +439,9 @@
     const snowEl = document.querySelector(".snow");
 
     const dialControllers = [];
-    let globalDragging = false; // lock page scroll while dragging
+    let globalDragging = false;
 
-    // prevent page scroll while a dial is being dragged
+    // prevent page scroll while dragging
     document.addEventListener(
       "touchmove",
       (e) => {
@@ -439,7 +476,6 @@
         checkCode();
       }
 
-      // Button clicks
       upBtn.addEventListener("click", () => {
         index = (index + 1) % letters.length;
         updateDisplay();
@@ -450,7 +486,7 @@
         updateDisplay();
       });
 
-      // Drag-to-rotate
+      // drag-to-rotate
       const STEP_PIXELS = 26;
       let dragging = false;
       let lastY = 0;
@@ -512,7 +548,6 @@
           endDrag();
         });
       } else {
-        // touch fallback
         display.addEventListener("touchstart", (e) => {
           if (e.touches.length > 0) {
             e.preventDefault();
@@ -531,7 +566,6 @@
           endDrag();
         });
 
-        // mouse fallback
         display.addEventListener("mousedown", (e) => {
           e.preventDefault();
           startDrag(e.clientY);
@@ -583,57 +617,59 @@
       }
     }
 
-    // ---------- Tilt-based snow drift ----------
+    // ===== TILT-BASED SNOW DRIFT =====
+    // Modern browsers, including Safari/Chrome on iOS 13+,
+    // expose orientation via the DeviceOrientationEvent API,
+    // but on iOS you must request permission after a user gesture.  [oai_citation:1‡MDN Web Docs](https://developer.mozilla.org/en-US/docs/Web/API/DeviceOrientationEvent?utm_source=chatgpt.com)
     function handleOrientation(event) {
       if (!snowEl) return;
 
-      const gamma = event.gamma ?? 0; // left-right tilt (-90 to 90)
-      const beta = event.beta ?? 0;   // front-back tilt (-180 to 180)
+      const gamma = event.gamma ?? 0; // left-right tilt
+      const beta = event.beta ?? 0;   // front-back tilt
 
-      // Clamp and normalise
       const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
 
       const maxTilt = 25;
       const xNorm = clamp(gamma / maxTilt, -1, 1);
       const yNorm = clamp((beta - 40) / maxTilt, -1, 1);
 
-      const offsetX = xNorm * 30; // px left/right
-      const offsetY = yNorm * 15; // px up/down
+      const offsetX = xNorm * 30;
+      const offsetY = yNorm * 15;
 
       snowEl.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
     }
 
-    function initTilt() {
-      if (!window.DeviceOrientationEvent) return;
+    async function initTilt() {
+      if (!("DeviceOrientationEvent" in window)) return;
 
-      // iOS requires explicit permission
-      if (typeof DeviceOrientationEvent.requestPermission === "function") {
-        DeviceOrientationEvent.requestPermission()
-          .then((response) => {
-            if (response === "granted") {
-              window.addEventListener("deviceorientation", handleOrientation);
-            }
-          })
-          .catch(() => {
-            // ignore if denied
-          });
-      } else {
-        // Android / older iOS
+      try {
+        // iOS 13+ permission API (Safari / Chrome on iOS share WebKit)
+        if (
+          typeof DeviceOrientationEvent.requestPermission === "function"
+        ) {
+          const state = await DeviceOrientationEvent.requestPermission();
+          if (state !== "granted") {
+            return; // no permission, just keep simple falling snow
+          }
+        }
         window.addEventListener("deviceorientation", handleOrientation);
+      } catch (err) {
+        console.warn("Orientation not available:", err);
       }
     }
 
-    // Ask for tilt permission on first tap / touch anywhere
     let tiltInitDone = false;
     function ensureTiltInit() {
       if (tiltInitDone) return;
       tiltInitDone = true;
       initTilt();
     }
+
+    // Kick off tilt permission after first tap / touch (required on iOS)
     document.body.addEventListener("click", ensureTiltInit, { once: true });
     document.body.addEventListener("touchstart", ensureTiltInit, { once: true });
 
-    // ---------- init ----------
+    // ===== init =====
     setupDials();
   </script>
 </body>
