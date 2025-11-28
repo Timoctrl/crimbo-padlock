@@ -21,7 +21,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background: radial-gradient(circle at top, #18263a 0, #050812 55%, #000 100%);
+      background: radial-gradient(circle at top, #071023 0, #02040a 55%, #000 100%);
       font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", sans-serif;
       color: #fff;
       overflow: hidden;
@@ -39,49 +39,49 @@
       justify-content: center;
     }
 
-    /* Soft falling snow effect */
+    /* Bigger, tilt-able snow layer */
     .snow {
       pointer-events: none;
       position: fixed;
       inset: 0;
       background-image:
-        radial-gradient(2px 2px at 20px 20px, rgba(255, 255, 255, 0.9), transparent),
-        radial-gradient(2px 2px at 60px 80px, rgba(255, 255, 255, 0.7), transparent),
-        radial-gradient(2px 2px at 120px 40px, rgba(255, 255, 255, 0.8), transparent),
-        radial-gradient(2px 2px at 200px 120px, rgba(255, 255, 255, 0.9), transparent),
-        radial-gradient(2px 2px at 260px 10px, rgba(255, 255, 255, 0.7), transparent);
-      background-size: 250px 250px;
-      animation: snow-fall 22s linear infinite;
-      opacity: 0.6;
+        radial-gradient(5px 5px at 20px 20px, rgba(255, 255, 255, 0.95), transparent),
+        radial-gradient(4px 4px at 120px 40px, rgba(255, 255, 255, 0.8), transparent),
+        radial-gradient(5px 5px at 220px 120px, rgba(255, 255, 255, 0.9), transparent),
+        radial-gradient(3px 3px at 60px 180px, rgba(255, 255, 255, 0.7), transparent),
+        radial-gradient(4px 4px at 260px 10px, rgba(255, 255, 255, 0.85), transparent);
+      background-size: 320px 320px;
+      animation: snow-fall 20s linear infinite;
+      opacity: 0.7;
       z-index: 0;
+      will-change: transform, background-position;
     }
 
+    /* Simple downwards fall; sideways drift is added by JS via transform */
     @keyframes snow-fall {
       0% {
-        transform: translateY(-60px);
         background-position: 0 0, 0 0, 0 0, 0 0, 0 0;
       }
       100% {
-        transform: translateY(60px);
-        background-position: 0 200px, 0 350px, 0 280px, 0 320px, 0 260px;
+        background-position: 0 260px, 0 420px, 0 340px, 0 380px, 0 300px;
       }
     }
 
     .padlock {
       position: relative;
       width: 100%;
-      padding: 40px 24px 56px;
-      background: linear-gradient(160deg, #b52b3b, #7a1722);
-      border-radius: 22px;
+      padding: 44px 24px 60px;
+      background: linear-gradient(145deg, #b62026, #7b1119);
+      border-radius: 26px;
       box-shadow:
-        0 20px 40px rgba(0, 0, 0, 0.8),
-        0 0 18px rgba(255, 255, 255, 0.18),
-        inset 0 0 10px rgba(0, 0, 0, 0.5);
+        0 22px 44px rgba(0, 0, 0, 0.9),
+        0 0 22px rgba(255, 215, 128, 0.45);
       text-align: center;
       transition: transform 0.4s ease, box-shadow 0.4s ease;
       z-index: 1;
       transform-origin: center bottom;
       animation: padlock-in 0.6s ease-out both;
+      border: 2px solid rgba(255, 230, 170, 0.4);
     }
 
     @keyframes padlock-in {
@@ -98,34 +98,34 @@
     .padlock.open {
       transform: translateY(-4px) scale(1.02);
       box-shadow:
-        0 26px 48px rgba(0, 0, 0, 0.9),
-        0 0 26px rgba(255, 215, 128, 0.9);
+        0 26px 52px rgba(0, 0, 0, 0.95),
+        0 0 28px rgba(255, 235, 170, 0.95);
     }
 
     .shackle {
       position: absolute;
-      top: -58px;
+      top: -60px;
       left: 50%;
-      width: 86px;
-      height: 70px;
-      border: 8px solid #ddd;
+      width: 90px;
+      height: 72px;
+      border: 8px solid #eee;
       border-bottom: none;
       border-radius: 60px 60px 0 0;
-      background: radial-gradient(circle at top, #fafafa, #c6c6c6);
+      background: radial-gradient(circle at top, #ffffff, #cfcfcf);
       transform: translateX(-50%);
       transition: transform 0.6s ease;
       transform-origin: left bottom;
-      box-shadow: 0 8px 12px rgba(0, 0, 0, 0.6);
+      box-shadow: 0 10px 14px rgba(0, 0, 0, 0.7);
     }
 
     .padlock.open .shackle {
-      transform: translate(-28px, -30px) rotate(-24deg);
+      transform: translate(-30px, -30px) rotate(-24deg);
     }
 
     .holly {
       position: absolute;
       top: -18px;
-      right: 14px;
+      right: 16px;
       font-size: 24px;
       transform: rotate(8deg);
       text-shadow: 0 0 6px rgba(0, 0, 0, 0.8);
@@ -133,8 +133,8 @@
 
     .name-tag {
       position: absolute;
-      left: 14px;
-      top: -10px;
+      left: 16px;
+      top: -8px;
       padding: 4px 10px;
       background: #ffe9b3;
       color: #5b1c21;
@@ -155,27 +155,38 @@
 
     .lock-body {
       margin-top: 12px;
-      padding: 18px 16px 24px;
-      background: radial-gradient(circle at top, #26372b, #111c14 55%, #050806 100%);
-      border-radius: 16px;
+      padding: 20px 16px 26px;
+      background: radial-gradient(circle at top, #283c2f, #101b13 55%, #050806 100%);
+      border-radius: 18px;
       box-shadow:
-        inset 0 0 16px rgba(0, 0, 0, 0.9),
-        0 0 6px rgba(255, 255, 255, 0.15);
+        inset 0 0 18px rgba(0, 0, 0, 0.9),
+        0 0 8px rgba(255, 255, 255, 0.15);
+      position: relative;
+    }
+
+    .lock-body::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.8);
+      pointer-events: none;
     }
 
     .title {
-      font-size: 16px;
-      letter-spacing: 0.18em;
+      font-size: 15px;
+      letter-spacing: 0.22em;
       text-transform: uppercase;
-      margin-bottom: 4px;
+      margin-bottom: 3px;
       opacity: 0.95;
     }
 
     .subtitle {
-      font-size: 13px;
-      letter-spacing: 0.22em;
+      font-size: 12px;
+      letter-spacing: 0.28em;
       text-transform: uppercase;
-      margin-bottom: 14px;
+      margin-bottom: 16px;
       color: #ffd9a8;
       opacity: 0.9;
     }
@@ -195,8 +206,8 @@
       background: linear-gradient(180deg, #232323, #050505);
       border-radius: 10px;
       box-shadow:
-        inset 0 0 8px rgba(0, 0, 0, 0.8),
-        0 4px 6px rgba(0, 0, 0, 0.7);
+        inset 0 0 8px rgba(0, 0, 0, 0.9),
+        0 4px 7px rgba(0, 0, 0, 0.8);
       width: 48px;
       border: 1px solid rgba(255, 255, 255, 0.06);
       cursor: grab;
@@ -205,8 +216,8 @@
     .dial.dragging {
       cursor: grabbing;
       box-shadow:
-        inset 0 0 10px rgba(0, 0, 0, 0.9),
-        0 5px 10px rgba(0, 0, 0, 0.9);
+        inset 0 0 10px rgba(0, 0, 0, 1),
+        0 5px 12px rgba(0, 0, 0, 1);
       transform: translateY(1px);
     }
 
@@ -221,7 +232,7 @@
       font-size: 18px;
       line-height: 1;
       transition: background 0.15s ease, transform 0.05s ease, box-shadow 0.15s ease;
-      box-shadow: 0 2px 3px rgba(0, 0, 0, 0.6);
+      box-shadow: 0 2px 3px rgba(0, 0, 0, 0.7);
       touch-action: manipulation;
       min-height: 36px;
     }
@@ -244,17 +255,17 @@
       border-radius: 6px;
       box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.9);
       font-weight: 600;
-      text-shadow: 0 0 8px rgba(0, 247, 255, 0.7);
+      text-shadow: 0 0 8px rgba(0, 247, 255, 0.9);
       display: flex;
       align-items: center;
       justify-content: center;
-      touch-action: none; /* so dragging here doesn't scroll the page */
+      touch-action: none; /* stop page scroll on drag target */
     }
 
     .hint {
       margin-top: 10px;
       font-size: 13px;
-      opacity: 0.8;
+      opacity: 0.82;
       line-height: 1.5;
     }
 
@@ -303,8 +314,8 @@
 
     @media (max-width: 480px) {
       .padlock {
-        padding: 32px 20px 48px;
-        border-radius: 20px;
+        padding: 34px 18px 48px;
+        border-radius: 22px;
       }
 
       .lock-body {
@@ -312,12 +323,12 @@
       }
 
       .title {
-        font-size: 15px;
+        font-size: 14px;
       }
 
       .subtitle {
-        font-size: 12px;
-        letter-spacing: 0.18em;
+        font-size: 11px;
+        letter-spacing: 0.22em;
       }
 
       .dials {
@@ -359,8 +370,8 @@
       </div>
 
       <div class="lock-body">
-        <div class="title">Ellie’s Final Lock</div>
-        <div class="subtitle">Christmas Edition</div>
+        <div class="title">ELLIE’S ESCAPE</div>
+        <div class="subtitle">CHRISTMAS EDITION</div>
 
         <div class="dials" id="dials"></div>
 
@@ -369,30 +380,38 @@
           <span>When you crack it, your Christmas surprise will unlock…</span>
         </div>
 
-        <div class="message" id="message">
-          <!-- Filled in when unlocked -->
-        </div>
+        <div class="message" id="message"></div>
       </div>
     </div>
   </div>
 
   <script>
     // ========== CONFIG ==========
-    const CODE = "GLOVES"; // Change this to your 6-letter code
+    const CODE = "GLOVES"; // secret 6-letter code
 
     const SUCCESS_MESSAGE_MAIN = "Unlocked, Ellie! Merry Christmas!";
     const SUCCESS_MESSAGE_SUB =
       "You found the key – check inside the gloves.";
 
     // ========== IMPLEMENTATION ==========
-
     const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
     const dialsContainer = document.getElementById("dials");
     const padlockEl = document.getElementById("padlock");
     const messageEl = document.getElementById("message");
     const unlockSound = document.getElementById("unlockSound");
+    const snowEl = document.querySelector(".snow");
 
     const dialControllers = [];
+    let globalDragging = false; // lock page scroll while dragging
+
+    // prevent page scroll while a dial is being dragged
+    document.addEventListener(
+      "touchmove",
+      (e) => {
+        if (globalDragging) e.preventDefault();
+      },
+      { passive: false }
+    );
 
     function createDial(initialLetter = "A") {
       const dial = document.createElement("div");
@@ -431,14 +450,15 @@
         updateDisplay();
       });
 
-      // Drag-to-rotate on the glowing letter
-      const STEP_PIXELS = 26; // how far you drag for one step
+      // Drag-to-rotate
+      const STEP_PIXELS = 26;
       let dragging = false;
       let lastY = 0;
       let accum = 0;
 
       function startDrag(clientY) {
         dragging = true;
+        globalDragging = true;
         lastY = clientY;
         accum = 0;
         dial.classList.add("dragging");
@@ -450,13 +470,11 @@
         accum += dy;
         lastY = clientY;
 
-        // drag up -> next letter
         while (accum <= -STEP_PIXELS) {
           index = (index + 1) % letters.length;
           accum += STEP_PIXELS;
           updateDisplay();
         }
-        // drag down -> previous letter
         while (accum >= STEP_PIXELS) {
           index = (index - 1 + letters.length) % letters.length;
           accum -= STEP_PIXELS;
@@ -467,10 +485,10 @@
       function endDrag() {
         if (!dragging) return;
         dragging = false;
+        globalDragging = false;
         dial.classList.remove("dragging");
       }
 
-      // Pointer events (modern browsers, including recent iOS Safari)
       if (window.PointerEvent) {
         display.addEventListener("pointerdown", (e) => {
           e.preventDefault();
@@ -494,7 +512,7 @@
           endDrag();
         });
       } else {
-        // Fallback: touch + mouse
+        // touch fallback
         display.addEventListener("touchstart", (e) => {
           if (e.touches.length > 0) {
             e.preventDefault();
@@ -513,18 +531,18 @@
           endDrag();
         });
 
+        // mouse fallback
         display.addEventListener("mousedown", (e) => {
           e.preventDefault();
           startDrag(e.clientY);
 
-          const moveHandler = (ev) => {
-            moveDrag(ev.clientY);
-          };
+          const moveHandler = (ev) => moveDrag(ev.clientY);
           const upHandler = () => {
             endDrag();
             window.removeEventListener("mousemove", moveHandler);
             window.removeEventListener("mouseup", upHandler);
           };
+
           window.addEventListener("mousemove", moveHandler);
           window.addEventListener("mouseup", upHandler);
         });
@@ -565,6 +583,57 @@
       }
     }
 
+    // ---------- Tilt-based snow drift ----------
+    function handleOrientation(event) {
+      if (!snowEl) return;
+
+      const gamma = event.gamma ?? 0; // left-right tilt (-90 to 90)
+      const beta = event.beta ?? 0;   // front-back tilt (-180 to 180)
+
+      // Clamp and normalise
+      const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
+
+      const maxTilt = 25;
+      const xNorm = clamp(gamma / maxTilt, -1, 1);
+      const yNorm = clamp((beta - 40) / maxTilt, -1, 1);
+
+      const offsetX = xNorm * 30; // px left/right
+      const offsetY = yNorm * 15; // px up/down
+
+      snowEl.style.transform = `translate(${offsetX}px, ${offsetY}px)`;
+    }
+
+    function initTilt() {
+      if (!window.DeviceOrientationEvent) return;
+
+      // iOS requires explicit permission
+      if (typeof DeviceOrientationEvent.requestPermission === "function") {
+        DeviceOrientationEvent.requestPermission()
+          .then((response) => {
+            if (response === "granted") {
+              window.addEventListener("deviceorientation", handleOrientation);
+            }
+          })
+          .catch(() => {
+            // ignore if denied
+          });
+      } else {
+        // Android / older iOS
+        window.addEventListener("deviceorientation", handleOrientation);
+      }
+    }
+
+    // Ask for tilt permission on first tap / touch anywhere
+    let tiltInitDone = false;
+    function ensureTiltInit() {
+      if (tiltInitDone) return;
+      tiltInitDone = true;
+      initTilt();
+    }
+    document.body.addEventListener("click", ensureTiltInit, { once: true });
+    document.body.addEventListener("touchstart", ensureTiltInit, { once: true });
+
+    // ---------- init ----------
     setupDials();
   </script>
 </body>
