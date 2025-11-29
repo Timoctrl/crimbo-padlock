@@ -1,443 +1,189 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="utf-8" />
   <title>Ellie’s Christmas Escape Padlock</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 
   <style>
-    * {
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
-    }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html,body { margin:0; padding:0; height:100%; overflow:hidden; }
 
-    html,
     body {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      overflow: hidden;
-    }
-
-    /* NIGHT SKY BACKGROUND – FULL SCREEN */
-    body {
-      min-height: 100dvh; /* modern mobile-safe viewport height */
+      min-height:100dvh;
       background: radial-gradient(circle at top, #081326 0, #030713 55%, #000 100%);
       font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      color: #fff;
-      position: relative;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: env(safe-area-inset-top, 12px)
-               0
-               env(safe-area-inset-bottom, 12px);
+      color:#fff;
+      position:relative;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      padding: env(safe-area-inset-top,12px) 0 env(safe-area-inset-bottom,12px);
     }
 
-    /* ------------------------------ */
-    /* SNOW LAYERS                     */
-    /* ------------------------------ */
+    /* SNOW LAYERS */
+    .snow-layer { position:fixed; inset:0; pointer-events:none; background-repeat:repeat; z-index:1; mix-blend-mode:screen; }
+    .snow-back { background-size:360px 360px; animation:snowSlow 40s linear infinite; z-index:1; filter:blur(0.3px) contrast(1.05); opacity:0.95;
+      background-image:
+        radial-gradient(6px 6px at 30px 40px, rgba(255,255,255,0.45), transparent 40%),
+        radial-gradient(5px 5px at 170px 80px, rgba(255,255,255,0.5), transparent 40%),
+        radial-gradient(4px 4px at 260px 30px, rgba(255,255,255,0.38), transparent 40%),
+        radial-gradient(6px 6px at 220px 170px, rgba(255,255,255,0.44), transparent 40%),
+        radial-gradient(5px 5px at 60px 260px, rgba(255,255,255,0.42), transparent 40%),
+        radial-gradient(8px 8px at 300px 300px, rgba(255,255,255,0.32), transparent 40%);
+    }
+    @keyframes snowSlow { 0%{transform:translateY(-90px)}100%{transform:translateY(90px)} }
 
-    .snow-layer {
+    .snow-mid { background-size:260px 260px; animation:snowMid 22s linear infinite; z-index:2; filter:blur(0.45px) contrast(1.08); opacity:0.98;
+      background-image:
+        radial-gradient(8px 8px at 20px 20px, rgba(255,255,255,0.72), transparent 40%),
+        radial-gradient(7px 7px at 140px 50px, rgba(255,255,255,0.68), transparent 40%),
+        radial-gradient(6px 6px at 70px 200px, rgba(255,255,255,0.6), transparent 40%),
+        radial-gradient(8px 8px at 240px 10px, rgba(255,255,255,0.78), transparent 40%),
+        radial-gradient(5px 5px at 180px 240px, rgba(255,255,255,0.66), transparent 40%);
+    }
+    @keyframes snowMid { 0%{transform:translate(-12px,-100px)}100%{transform:translate(12px,100px)} }
+
+    .snow-front { background-size:140px 140px; animation:snowFast 14s linear infinite; z-index:9; filter:blur(0.7px) contrast(1.12) saturate(1.05); opacity:1;
+      background-image:
+        radial-gradient(10px 10px at 20px 20px, rgba(255,255,255,0.98), transparent 45%),
+        radial-gradient(8px 8px at 100px 40px, rgba(255,255,255,0.95), transparent 45%),
+        radial-gradient(10px 10px at 220px 120px, rgba(255,255,255,0.98), transparent 45%),
+        radial-gradient(8px 8px at 60px 200px, rgba(255,255,255,0.96), transparent 45%),
+        radial-gradient(10px 10px at 260px 10px, rgba(255,255,255,0.98), transparent 45%),
+        radial-gradient(8px 8px at 150px 260px, rgba(255,255,255,0.96), transparent 45%),
+        radial-gradient(14px 14px at 50px 120px, rgba(255,255,255,0.85), transparent 45%),
+        radial-gradient(12px 12px at 180px 40px, rgba(255,255,255,0.86), transparent 45%);
+    }
+    @keyframes snowFast { 0%{transform:translate(28px,-120px)}100%{transform:translate(-28px,120px)} }
+
+    /* SANTA (background) */
+    .santa {
       position: fixed;
-      inset: 0;
+      top: 10%;
+      left: -40%;
+      width: 260px;
+      height: auto;
+      z-index: 0; /* behind snow layers */
       pointer-events: none;
-      background-repeat: repeat;
-      background-size: 220px 220px;
-      z-index: 0;
-    }
-
-    /* BACK SNOW */
-    .snow-back {
-      background-image:
-        radial-gradient(2px 2px at 10px 20px, rgba(255, 255, 255, 0.25), transparent),
-        radial-gradient(2px 2px at 90px 60px, rgba(255, 255, 255, 0.28), transparent),
-        radial-gradient(2px 2px at 160px 40px, rgba(255, 255, 255, 0.22), transparent),
-        radial-gradient(2px 2px at 210px 130px, rgba(255, 255, 255, 0.25), transparent),
-        radial-gradient(2px 2px at 40px 200px, rgba(255, 255, 255, 0.25), transparent),
-        radial-gradient(2px 2px at 200px 250px, rgba(255, 255, 255, 0.2), transparent);
-      animation: snowSlow 40s linear infinite;
-      z-index: 1;
-    }
-
-    @keyframes snowSlow {
-      0% {
-        transform: translateY(-70px);
-      }
-      100% {
-        transform: translateY(70px);
-      }
-    }
-
-    /* MID SNOW (BEHIND LOCK) */
-    .snow-mid {
-      background-image:
-        radial-gradient(4px 4px at 20px 20px, rgba(255, 255, 255, 0.6), transparent),
-        radial-gradient(4px 4px at 120px 40px, rgba(255, 255, 255, 0.55), transparent),
-        radial-gradient(3px 3px at 60px 180px, rgba(255, 255, 255, 0.5), transparent),
-        radial-gradient(4px 4px at 260px 10px, rgba(255, 255, 255, 0.65), transparent),
-        radial-gradient(3px 3px at 180px 240px, rgba(255, 255, 255, 0.6), transparent);
-      animation: snowMid 22s linear infinite;
-      z-index: 2;
-    }
-
-    @keyframes snowMid {
-      0% {
-        transform: translate(-10px, -80px);
-      }
-      100% {
-        transform: translate(10px, 80px);
-      }
-    }
-
-    /* FRONT SNOW (OVER LOCK) */
-    .snow-front {
-      background-image:
-        radial-gradient(6px 6px at 20px 20px, rgba(255, 255, 255, 0.95), transparent),
-        radial-gradient(5px 5px at 120px 40px, rgba(255, 255, 255, 0.9), transparent),
-        radial-gradient(6px 6px at 220px 120px, rgba(255, 255, 255, 0.95), transparent),
-        radial-gradient(5px 5px at 60px 200px, rgba(255, 255, 255, 0.95), transparent),
-        radial-gradient(6px 6px at 260px 10px, rgba(255, 255, 255, 0.95), transparent),
-        radial-gradient(5px 5px at 150px 260px, rgba(255, 255, 255, 0.95), transparent);
-      animation: snowFast 14s linear infinite;
-      z-index: 6; /* on top of padlock */
-    }
-
-    @keyframes snowFast {
-      0% {
-        transform: translate(20px, -90px);
-      }
-      100% {
-        transform: translate(-20px, 90px);
-      }
-    }
-
-    /* SNOW PILE AT THE BOTTOM (BEHIND LOCK) */
-    .snow-pile {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 120px;
-      background:
-        radial-gradient(ellipse at bottom, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.15) 60%, transparent),
-        radial-gradient(circle at 15% 0, rgba(255, 255, 255, 0.4), transparent 60%),
-        radial-gradient(circle at 85% 0, rgba(255, 255, 255, 0.4), transparent 60%);
-      animation: snowPile 14s forwards;
-      z-index: 3; /* behind padlock, above mid-snow */
-      pointer-events: none;
-      filter: blur(0.3px);
-    }
-
-    @keyframes snowPile {
-      0% {
-        opacity: 0;
-        transform: translateY(40px);
-      }
-      100% {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    /* ------------------------------ */
-    /* FOREGROUND SCENE (PADLOCK)      */
-    /* ------------------------------ */
-
-    .app-shell {
-      position: relative;
-      width: 100%;
-      max-width: 420px;
-      margin: 0 auto;
-      padding: 0 16px 24px;
-      z-index: 5; /* above mid-snow, below front snow */
-    }
-
-    .padlock {
-      position: relative;
-      margin: 0 auto;
-      max-width: 300px;
-      padding-top: 50px;
-      animation: fadeIn 0.7s ease-out both;
-      z-index: 5;
-    }
-
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(30px) scale(0.9);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-      }
-    }
-
-    .padlock.open {
-      transform: translateY(-4px) scale(1.02);
-    }
-
-    /* REAL PADLOCK SHACKLE (U-SHAPE WITH GAP) */
-    .shackle {
-      position: absolute;
-      top: -70px;
-      left: 50%;
-      width: 140px;
-      height: 120px;
-      border-radius: 80px 80px 0 0;
-      border: 10px solid #d6dde2;
-      border-bottom: none;
-      background: transparent;
-      transform: translateX(-50%);
-      z-index: 5;
-      box-shadow: 0 8px 14px rgba(0, 0, 0, 0.45);
-      transition: transform 0.6s ease;
-      transform-origin: 20% 20%;
-    }
-
-    /* Inner cut-out so you see the sky through the gap */
-    .shackle::before {
-      content: "";
-      position: absolute;
-      top: 16px;
-      left: 50%;
-      width: 104px;
-      height: 92px;
-      border-radius: 60px 60px 0 0;
-      transform: translateX(-50%);
-      background: radial-gradient(circle at 50% 0, #0b1527 0, #030713 55%, #000 100%);
-      box-shadow: inset 0 4px 6px rgba(0, 0, 0, 0.45);
-    }
-
-    /* Small golden bar that sits between the legs of the shackle */
-    .shackle::after {
-      content: "";
-      position: absolute;
-      bottom: -4px;
-      left: 50%;
-      width: 40px;
-      height: 22px;
-      transform: translateX(-50%);
-      background: linear-gradient(180deg, #f9de9c, #c18a2d 70%, #8e5d13 100%);
-      border-radius: 0 0 12px 12px;
-      box-shadow:
-        0 2px 4px rgba(0, 0, 0, 0.6),
-        inset 0 0 4px rgba(255, 255, 255, 0.5);
-    }
-
-    .padlock.open .shackle {
-      transform: translate(-10px, -10px) rotate(-25deg);
-    }
-
-    .lock-body {
-      background: linear-gradient(180deg, #fbeab7, #d6a850 60%, #a36b1e 100%);
-      padding: 18px 14px 22px;
-      border-radius: 20px;
-      box-shadow:
-        0 16px 28px rgba(0, 0, 0, 0.85),
-        inset 0 0 16px rgba(0, 0, 0, 0.4);
-      border: 1px solid rgba(255, 245, 220, 0.9);
-      position: relative;
-    }
-
-    .title {
-      text-align: center;
-      font-size: 15px;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: #351f0a;
-      margin-bottom: 3px;
-    }
-
-    .subtitle {
-      text-align: center;
-      font-size: 12px;
-      letter-spacing: 0.25em;
-      text-transform: uppercase;
-      color: #5a310f;
-      margin-bottom: 14px;
-    }
-
-    .dial-plate {
-      background: radial-gradient(circle at top, #28422c, #111b13 60%, #050806 100%);
-      padding: 14px 10px 16px;
-      border-radius: 14px;
-      box-shadow:
-        inset 0 0 18px rgba(0, 0, 0, 0.9),
-        0 0 8px rgba(0, 0, 0, 0.6);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-    }
-
-    .dials {
-      display: flex;
-      justify-content: center;
-      gap: 8px;
-      margin-bottom: 12px;
-      flex-wrap: nowrap;
-    }
-
-    .dial {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 6px 5px;
-      width: 46px;
-      background: linear-gradient(180deg, #232323, #050505);
-      border-radius: 10px;
-      box-shadow:
-        inset 0 0 8px rgba(0, 0, 0, 0.9),
-        0 4px 7px rgba(0, 0, 0, 0.7);
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      cursor: grab;
-    }
-
-    .dial.dragging {
-      cursor: grabbing;
-    }
-
-    .dial button {
-      border: none;
-      background: linear-gradient(180deg, #2d8435, #16501d);
-      color: #f6fff6;
-      border-radius: 6px;
-      padding: 6px 0;
-      width: 100%;
-      font-size: 18px;
-      box-shadow: 0 2px 3px rgba(0, 0, 0, 0.7);
-      min-height: 34px;
-    }
-
-    .display {
-      margin: 6px 0;
-      padding: 7px 0;
-      width: 100%;
-      text-align: center;
-      background: #000;
-      color: #00f7ff;
-      font-size: 26px;
-      border-radius: 6px;
-      box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.9);
-      touch-action: none;
-    }
-
-    .hint {
-      text-align: center;
-      font-size: 12px;
-      color: #ffe9c0;
-      opacity: 0.9;
-      margin-top: 4px;
-    }
-
-    .padlock.open .hint {
-      opacity: 0.25;
-    }
-
-    /* TILT BUTTON */
-    .tilt-btn {
-      margin: 10px auto 0;
-      padding: 6px 12px;
-      font-size: 12px;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      border-radius: 999px;
-      border: 1px solid rgba(255, 255, 255, 0.25);
-      background: rgba(0, 0, 0, 0.45);
-      color: #ffffff;
-      cursor: pointer;
-      display: block;
-    }
-
-    .tilt-btn:disabled {
-      opacity: 0.45;
-      cursor: default;
-    }
-
-    .tilt-btn.active {
-      background: rgba(12, 103, 34, 0.8);
-      border-color: rgba(180, 255, 200, 0.8);
-    }
-
-    /* UNLOCK MESSAGE – DARK GLASS PANEL */
-    .message {
-      text-align: center;
-      margin-top: 12px;
-      font-size: 15px;
-      line-height: 1.4;
       opacity: 0;
-      color: #ffffff;
-      background: rgba(0, 0, 0, 0.78);
-      border-radius: 10px;
-      padding: 8px 10px;
-      text-shadow: 0 0 6px rgba(0, 0, 0, 0.8);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      transform: translateY(8px);
-      transition: opacity 0.4s ease, transform 0.4s ease;
+      transform-origin: center;
+      will-change: left, transform, top, opacity;
     }
+    .santa.fly-running { transition-property: left, opacity, transform; transition-timing-function: linear, linear, ease; }
 
-    .message span {
-      display: block;
-      font-size: 13px;
-      margin-top: 3px;
-      color: #e6ffe3;
+    /* BOTTOM PILE */
+    .snow-pile { position: fixed; bottom:0; left:0; right:0; height:0; max-height:220px; z-index:3; pointer-events:none; perspective:900px; transition:height 420ms ease-out; display:flex; justify-content:center; overflow:visible; }
+    .snow-pile-inner {
+      position:absolute; left:0; right:0; bottom:0; height:100%;
+      background:
+        radial-gradient(ellipse at bottom, rgba(255,255,255,0.98) 0%, rgba(255,255,255,0.9) 30%, rgba(255,255,255,0.18) 65%, transparent 100%),
+        radial-gradient(circle at 12% 10%, rgba(255,255,255,0.85), transparent 60%),
+        radial-gradient(circle at 88% 12%, rgba(255,255,255,0.82), transparent 60%);
+      filter: blur(0.6px) contrast(1.05);
+      box-shadow: inset 0 8px 28px rgba(255,255,255,0.02), 0 -2px 10px rgba(0,0,0,0.35);
+      transform-origin:50% 100%; transform:rotateX(0deg) rotateY(0deg); transition:transform 420ms cubic-bezier(.2,.8,.2,1), box-shadow 420ms ease; border-top-left-radius:60% 40%; border-top-right-radius:60% 40%;
+      pointer-events:none; width:100%;
     }
+    .snow-pile-sheen { position:absolute; left:10%; right:10%; bottom:calc(100% - 10px); height:24px; background:linear-gradient(180deg, rgba(255,255,255,0.75), rgba(255,255,255,0.12)); filter:blur(8px); opacity:0.6; border-radius:50%; pointer-events:none; transform-origin:50% 100%; }
 
-    .padlock.open .message {
-      opacity: 1;
-      transform: translateY(0);
-    }
+    /* TOP PILE — will render via an inline <svg> inside the .snow-pile-top element so the mask is applied reliably */
+    .snow-pile-top { position:absolute; left:-12px; width:calc(100% + 24px); top:-18px; height:0; z-index:5; pointer-events:none; perspective:800px; transition:height 420ms ease-out; overflow:visible; }
+    .snow-pile-top svg { width:100%; height:100%; display:block; overflow:visible; }
+    .snow-pile-top-inner { pointer-events:none; }
 
-    .keyhole {
-      margin: 12px auto 0;
-      width: 18px;
-      height: 26px;
-      border-radius: 12px;
-      background: radial-gradient(circle at 50% 20%, #222, #000);
-      box-shadow: inset 0 0 4px rgba(255, 255, 255, 0.1);
-    }
+    /* PADLOCK & UI */
+    .app-shell { position:relative; width:100%; max-width:420px; margin:0 auto; padding:0 16px 24px; z-index:6; }
+    .padlock { position:relative; margin:0 auto; max-width:300px; padding-top:50px; animation:fadeIn .7s ease-out both; z-index:6; }
+    @keyframes fadeIn { from{opacity:0; transform:translateY(30px) scale(.9)} to{opacity:1; transform:translateY(0) scale(1)} }
+    .padlock.open { transform:translateY(-4px) scale(1.02); }
 
-    /* REDUCED MOTION SUPPORT */
+    .shackle { position:absolute; top:-70px; left:50%; width:140px; height:120px; border-radius:80px 80px 0 0; border:10px solid #d6dde2; border-bottom:none; background:transparent; transform:translateX(-50%); z-index:7; box-shadow:0 8px 14px rgba(0,0,0,0.45); transition:transform .6s ease; transform-origin:20% 20%; }
+    .shackle::before { content:""; position:absolute; top:16px; left:50%; width:104px; height:92px; border-radius:60px 60px 0 0; transform:translateX(-50%); background: radial-gradient(circle at 50% 0, #0b1527 0, #030713 55%, #000 100%); box-shadow: inset 0 4px 6px rgba(0,0,0,0.45); }
+    .shackle::after { content:""; position:absolute; bottom:-4px; left:50%; width:40px; height:22px; transform:translateX(-50%); background:linear-gradient(180deg,#f9de9c,#c18a2d 70%,#8e5d13 100%); border-radius:0 0 12px 12px; box-shadow:0 2px 4px rgba(0,0,0,0.6), inset 0 0 4px rgba(255,255,255,0.5); }
+
+    .lock-body { background: linear-gradient(180deg,#fbeab7,#d6a850 60%,#a36b1e 100%); padding:18px 14px 22px; border-radius:20px; box-shadow:0 16px 28px rgba(0,0,0,0.85), inset 0 0 16px rgba(0,0,0,0.4); border:1px solid rgba(255,245,220,0.9); position:relative; z-index:4; overflow:visible; }
+
+    .title { text-align:center; font-size:15px; letter-spacing:0.22em; text-transform:uppercase; color:#351f0a; margin-bottom:3px; }
+    .subtitle { text-align:center; font-size:12px; letter-spacing:0.25em; text-transform:uppercase; color:#5a310f; margin-bottom:14px; }
+    .dial-plate { background: radial-gradient(circle at top,#28422c,#111b13 60%,#050806 100%); padding:14px 10px 16px; border-radius:14px; box-shadow:inset 0 0 18px rgba(0,0,0,0.9), 0 0 8px rgba(0,0,0,0.6); border:1px solid rgba(255,255,255,0.12); }
+    .dials { display:flex; justify-content:center; gap:8px; margin-bottom:12px; flex-wrap:nowrap; }
+    .dial { display:flex; flex-direction:column; align-items:center; padding:6px 5px; width:46px; background:linear-gradient(180deg,#232323,#050505); border-radius:10px; box-shadow:inset 0 0 8px rgba(0,0,0,0.9), 0 4px 7px rgba(0,0,0,0.7); border:1px solid rgba(255,255,255,0.06); cursor:grab; }
+    .dial.dragging { cursor:grabbing; }
+    .display { margin:6px 0; padding:7px 0; width:100%; text-align:center; background:#000; color:#00f7ff; font-size:26px; border-radius:6px; box-shadow: inset 0 0 6px rgba(0,0,0,0.9); touch-action:none; }
+    .hint { text-align:center; font-size:12px; color:#ffe9c0; opacity:0.9; margin-top:4px; }
+
+    .tilt-btn { margin:10px auto 0; padding:6px 12px; font-size:12px; letter-spacing:0.12em; text-transform:uppercase; border-radius:999px; border:1px solid rgba(255,255,255,0.25); background:rgba(0,0,0,0.45); color:#fff; cursor:pointer; display:block; }
+    .tilt-btn.active { background: rgba(12,103,34,0.8); border-color: rgba(180,255,200,0.8); }
+    .message { text-align:center; margin-top:12px; font-size:15px; line-height:1.4; opacity:0; color:#fff; background: rgba(0,0,0,0.78); border-radius:10px; padding:8px 10px; text-shadow:0 0 6px rgba(0,0,0,0.8); border:1px solid rgba(255,255,255,0.12); transform:translateY(8px); transition:opacity .4s ease, transform .4s ease; }
+    .message span { display:block; font-size:13px; margin-top:3px; color:#e6ffe3; }
+    .padlock.open .message { opacity:1; transform:translateY(0); }
+
+    .keyhole { margin:12px auto 0; width:18px; height:26px; border-radius:12px; background: radial-gradient(circle at 50% 20%, #222,#000); box-shadow: inset 0 0 4px rgba(255,255,255,0.1); }
+
+    /* reduced-motion */
     @media (prefers-reduced-motion: reduce) {
-      .snow-layer,
-      .snow-pile,
-      .padlock {
-        animation: none !important;
-      }
+      .snow-layer, .snow-pile, .padlock, .santa { animation:none !important; }
+      .snow-back, .snow-mid, .snow-front { background-position:center !important; }
+      .snow-pile-inner, .snow-pile-top-inner { transition:none !important; }
+      .santa { display:none; }
     }
 
-    /* SMALL SCREEN TWEAKS */
-    @media (max-width: 400px) {
-      .padlock {
-        max-width: 260px;
-        padding-top: 45px;
-      }
-
-      .dial {
-        width: 40px;
-      }
-
-      .title {
-        font-size: 13px;
-        letter-spacing: 0.18em;
-      }
-
-      .subtitle {
-        font-size: 11px;
-        letter-spacing: 0.2em;
-      }
-
-      .message {
-        font-size: 14px;
-      }
+    @media (max-width:400px) {
+      .padlock { max-width:260px; padding-top:45px; }
+      .dial { width:40px; }
+      .title { font-size:13px; letter-spacing:0.18em; }
+      .subtitle { font-size:11px; letter-spacing:0.2em; }
+      .message { font-size:14px; }
+      .santa { width:180px; left:-40%; top:8%; }
     }
   </style>
 </head>
-
 <body>
+  <!-- SANTA (detailed silhouette). We'll control motion via JS to guarantee full cross-screen flights and random timing. -->
+  <div class="santa" id="santa" aria-hidden="true">
+    <svg viewBox="0 0 300 90" width="100%" height="100%" preserveAspectRatio="xMinYMid meet" aria-hidden="true">
+      <g fill="#fff" stroke="none" transform="translate(0,6)">
+        <!-- Sleigh body -->
+        <path d="M10 50 Q40 70 90 70 L200 70 Q230 70 250 58 L240 56 Q225 66 200 66 L110 66 Q60 66 10 50 Z" fill="#fff"/>
+        <!-- Seat + driver -->
+        <rect x="120" y="26" width="36" height="18" rx="4" fill="#fff"/>
+        <circle cx="126" cy="22" r="6" fill="#fff"/>
+        <rect x="122" y="16" width="8" height="6" rx="2" fill="#fff"/>
+        <!-- Runners -->
+        <path d="M20 74 L68 74" stroke="#fff" stroke-width="4" stroke-linecap="round" />
+        <path d="M108 74 L198 74" stroke="#fff" stroke-width="4" stroke-linecap="round" />
+        <!-- Rope -->
+        <path d="M250 50 Q270 48 284 40" stroke="#fff" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+        <!-- Reindeer (3) -->
+        <g transform="translate(264,16) scale(1)">
+          <path d="M0 10 L6 6 L12 10 L10 14 L14 16 L9 18 L7 22 L2 20 Z" fill="#fff"/>
+          <path d="M-18 6 L-12 0 L-8 2 L-6 6 L-2 4 L-4 8 L-10 10 Z" fill="#fff"/>
+        </g>
+        <g transform="translate(285,8) scale(.92)">
+          <path d="M0 10 L6 6 L12 10 L10 14 L14 16 L9 18 L7 22 L2 20 Z" fill="#fff"/>
+          <path d="M-18 6 L-12 0 L-8 2 L-6 6 L-2 4 L-4 8 L-10 10 Z" fill="#fff"/>
+        </g>
+        <g transform="translate(305,20) scale(.86)">
+          <path d="M0 10 L6 6 L12 10 L10 14 L14 16 L9 18 L7 22 L2 20 Z" fill="#fff"/>
+          <path d="M-18 6 L-12 0 L-8 2 L-6 6 L-2 4 L-4 8 L-10 10 Z" fill="#fff"/>
+        </g>
+        <!-- sparkle -->
+        <circle cx="170" cy="42" r="2.2" fill="#fff"/>
+      </g>
+    </svg>
+  </div>
+
   <!-- SNOW LAYERS -->
   <div class="snow-layer snow-back"></div>
   <div class="snow-layer snow-mid"></div>
   <div class="snow-layer snow-front"></div>
-  <div class="snow-pile"></div>
+
+  <!-- BOTTOM PILE -->
+  <div class="snow-pile" id="snowPile">
+    <div class="snow-pile-inner" id="snowPileInner"></div>
+    <div class="snow-pile-sheen" aria-hidden="true"></div>
+  </div>
 
   <audio id="unlockSound" src="unlock.mp3"></audio>
 
@@ -446,6 +192,58 @@
       <div class="shackle"></div>
 
       <div class="lock-body">
+        <!-- TOP PILE: we render snow via an inline SVG here so the snow shape can be clipped exactly to the lock top silhouette.
+             The SVG's viewBox matches the mask coordinate system used before (300x80). We use preserveAspectRatio="none"
+             so the graphic stretches to the element's width/height and the JS-only controls the container height. -->
+        <div class="snow-pile-top" id="snowPileTop" aria-hidden="true">
+          <svg viewBox="0 0 300 80" preserveAspectRatio="none" aria-hidden="true">
+            <defs>
+              <!-- Soft blur for the shape's edge -->
+              <filter id="blurEdge" x="-20%" y="-20%" width="140%" height="140%">
+                <feGaussianBlur stdDeviation="3"></feGaussianBlur>
+              </filter>
+
+              <!-- precise lock-top shape (rounded rect) used as a clipPath so the snow conforms exactly -->
+              <clipPath id="lockClipPath">
+                <!-- these coordinates reflect the 300x80 design space -->
+                <rect x="0" y="0" width="300" height="80" rx="18" ry="18"></rect>
+              </clipPath>
+
+              <!-- soft mask to feather the edge: white = visible -->
+              <mask id="lockMaskSvg" maskUnits="userSpaceOnUse" maskContentUnits="userSpaceOnUse">
+                <rect x="0" y="0" width="300" height="80" rx="18" ry="18" fill="white" filter="url(#blurEdge)"></rect>
+                <ellipse cx="150" cy="18" rx="80" ry="10" fill="white" fill-opacity="0.96"></ellipse>
+              </mask>
+            </defs>
+
+            <!-- Snow layered composition; clipped to the lock shape so it wraps cleanly around rounded corners -->
+            <g clip-path="url(#lockClipPath)">
+              <!-- base soft white mound -->
+              <rect x="0" y="0" width="300" height="80" fill="none" />
+              <g mask="url(#lockMaskSvg)">
+                <rect x="0" y="0" width="300" height="80" fill="none" />
+                <ellipse cx="150" cy="34" rx="150" ry="60" fill="#ffffff" fill-opacity="0.95" />
+                <!-- small bumps for realism -->
+                <ellipse cx="60" cy="30" rx="48" ry="28" fill="#ffffff" fill-opacity="0.96" />
+                <ellipse cx="200" cy="28" rx="56" ry="24" fill="#ffffff" fill-opacity="0.95" />
+                <!-- top sheen -->
+                <ellipse cx="150" cy="18" rx="100" ry="12" fill="#ffffff" fill-opacity="0.88" />
+                <!-- fine texture -->
+                <g fill="#fff" fill-opacity="0.12">
+                  <circle cx="40" cy="26" r="2.2"></circle>
+                  <circle cx="80" cy="34" r="1.8"></circle>
+                  <circle cx="120" cy="28" r="1.6"></circle>
+                  <circle cx="170" cy="30" r="2.6"></circle>
+                  <circle cx="220" cy="26" r="1.6"></circle>
+                </g>
+              </g>
+
+              <!-- subtle shadow under the snow to match padlock depth -->
+              <rect x="0" y="54" width="300" height="26" fill="rgba(0,0,0,0.18)" opacity="0.5" />
+            </g>
+          </svg>
+        </div>
+
         <div class="title">ELLIE’S ESCAPE</div>
         <div class="subtitle">CHRISTMAS EDITION</div>
 
@@ -457,9 +255,7 @@
             <span>When you crack it, your Christmas surprise will unlock…</span>
           </div>
 
-          <button class="tilt-btn" id="tiltButton" type="button">
-            Enable tilt snow
-          </button>
+          <button class="tilt-btn" id="tiltButton" type="button">Enable tilt snow</button>
 
           <div class="message" id="message"></div>
           <div class="keyhole"></div>
@@ -470,7 +266,6 @@
 
   <script>
     const CODE = "GLOVES";
-
     const SUCCESS_MESSAGE_MAIN = "Unlocked, Ellie! Merry Christmas!";
     const SUCCESS_MESSAGE_SUB = "You found the key – check inside the gloves.";
 
@@ -484,17 +279,18 @@
     const snowMid = document.querySelector(".snow-mid");
     const snowFront = document.querySelector(".snow-front");
     const tiltButton = document.getElementById("tiltButton");
+    const santaEl = document.getElementById("santa");
+
+    const snowPileEl = document.getElementById("snowPile");
+    const snowPileInner = document.getElementById("snowPileInner");
+    const snowPileTopEl = document.getElementById("snowPileTop");
 
     const dialControllers = [];
     let globalDragging = false;
 
-    document.addEventListener(
-      "touchmove",
-      (e) => {
-        if (globalDragging) e.preventDefault();
-      },
-      { passive: false }
-    );
+    document.addEventListener("touchmove", (e) => {
+      if (globalDragging) e.preventDefault();
+    }, { passive: false });
 
     function createDial(initialLetter = "A") {
       const dial = document.createElement("div");
@@ -593,98 +389,220 @@
       const attempt = dialControllers.map((c) => c.getLetter()).join("");
       if (attempt === CODE && !padlockEl.classList.contains("open")) {
         padlockEl.classList.add("open");
-        messageEl.innerHTML =
-          SUCCESS_MESSAGE_MAIN + "<br><span>" + SUCCESS_MESSAGE_SUB + "</span>";
+        messageEl.innerHTML = SUCCESS_MESSAGE_MAIN + "<br><span>" + SUCCESS_MESSAGE_SUB + "</span>";
         unlockSound.currentTime = 0;
         unlockSound.play().catch(() => {});
       }
     }
 
-    function setupTiltSnow() {
-      if (!tiltButton) return;
+    /* --------------------------
+       Snow accumulation logic
+       -------------------------- */
 
-      // Respect reduced-motion preference
-      const reduceMotion =
-        window.matchMedia &&
-        window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const MAX_PILE_HEIGHT = 140;
+    const MAX_TOP_HEIGHT = 50;
+    const TOP_SCALE = 0.36;
+    let currentPileHeight = 0;
+    let accumulationActive = true;
 
-      const hasOrientation = "DeviceOrientationEvent" in window;
+    const ratePxPerSecond = 8;
+    let lastAccumTs = null;
 
-      if (!hasOrientation || reduceMotion) {
-        // Hide button if we can’t/shouldn’t use tilt
-        tiltButton.style.display = "none";
+    function accumulateStep(ts) {
+      if (!accumulationActive) {
+        lastAccumTs = ts;
+        requestAnimationFrame(accumulateStep);
         return;
       }
+      if (!lastAccumTs) lastAccumTs = ts;
+      const dt = Math.min(100, ts - lastAccumTs);
+      lastAccumTs = ts;
+
+      const delta = (ratePxPerSecond * dt) / 1000;
+      currentPileHeight = Math.min(MAX_PILE_HEIGHT, currentPileHeight + delta);
+
+      snowPileEl.style.height = Math.round(currentPileHeight) + "px";
+
+      const targetTop = Math.min(MAX_TOP_HEIGHT, currentPileHeight * TOP_SCALE);
+      const topHeight = currentPileHeight > 6 ? Math.round(targetTop) : 0;
+      snowPileTopEl.style.height = topHeight + "px";
+
+      const sheen = snowPileEl.querySelector(".snow-pile-sheen");
+      if (sheen) sheen.style.opacity = 0.25 + (currentPileHeight / MAX_PILE_HEIGHT) * 0.75;
+
+      requestAnimationFrame(accumulateStep);
+    }
+
+    function startSnowAccumulation() {
+      currentPileHeight = 0;
+      lastAccumTs = null;
+      accumulationActive = true;
+      requestAnimationFrame(accumulateStep);
+    }
+
+    function stopSnowAccumulation() {
+      accumulationActive = false;
+    }
+
+    /* --------------------------
+       Tilt + tumbling logic
+       -------------------------- */
+
+    const reduceMotion =
+      window.matchMedia &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    let smoothedBeta = 0, smoothedGamma = 0;
+    function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+
+    function setupTiltSnow() {
+      if (!tiltButton) return;
+      const hasOrientation = "DeviceOrientationEvent" in window;
+      if (!hasOrientation || reduceMotion) { tiltButton.style.display = "none"; return; }
 
       let tiltActive = false;
 
       function onDeviceOrientation(event) {
         if (!tiltActive) return;
 
-        // gamma: left/right tilt, beta: forward/back tilt
-        const gamma = event.gamma || 0; // -90 to 90
-        const beta = event.beta || 0; // -180 to 180
+        const gamma = typeof event.gamma === "number" ? event.gamma : 0;
+        const beta = typeof event.beta === "number" ? event.beta : 0;
 
-        const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
+        const targetGamma = clamp(gamma, -30, 30);
+        const targetBeta = clamp(beta, -30, 30);
 
-        const xNorm = clamp(gamma, -30, 30) / 30; // -1 to 1
-        const yNorm = clamp(beta, -30, 30) / 30;
+        smoothedGamma += (targetGamma - smoothedGamma) * 0.12;
+        smoothedBeta += (targetBeta - smoothedBeta) * 0.12;
 
-        // Horizontal drift (parallax) in px
-        const xBack = xNorm * 8;
-        const xMid = xNorm * 14;
-        const xFront = xNorm * 20;
+        const xNorm = smoothedGamma / 30;
+        const yNorm = smoothedBeta / 30;
 
-        // Slight vertical drift
-        const yBack = yNorm * 4;
-        const yMid = yNorm * 6;
-        const yFront = yNorm * 8;
+        snowBack.style.backgroundPosition = `${xNorm * 8}px ${yNorm * 4}px`;
+        snowMid.style.backgroundPosition = `${xNorm * 14}px ${yNorm * 6}px`;
+        snowFront.style.backgroundPosition = `${xNorm * 20}px ${yNorm * 8}px`;
 
-        // Keep CSS falling animations and only nudge background positions
-        snowBack.style.backgroundPosition = `${xBack}px ${yBack}px`;
-        snowMid.style.backgroundPosition = `${xMid}px ${yMid}px`;
-        snowFront.style.backgroundPosition = `${xFront}px ${yFront}px`;
+        const tumbleX = clamp(-smoothedBeta, -20, 20);
+        const tumbleY = clamp(-smoothedGamma, -20, 20);
+        const shadowStrength = 0.35 + Math.abs(tumbleX + tumbleY) / 160;
+
+        snowPileInner.style.transform = `rotateX(${tumbleX}deg) rotateY(${tumbleY}deg)`;
+        snowPileInner.style.boxShadow = `inset 0 8px 22px rgba(255,255,255,0.02), 0 -4px 16px rgba(0,0,0,${0.25 + shadowStrength})`;
+
+        const topTumbleX = tumbleX * 0.95, topTumbleY = tumbleY * 0.95;
+        // rotate the top svg container to maintain level feel
+        const topInner = snowPileTopEl;
+        topInner.style.transform = `rotateX(${topTumbleX}deg) rotateY(${topTumbleY}deg)`;
       }
 
       async function enableTilt() {
-        // iOS / WebKit: must request permission from user gesture
-        if (
-          typeof DeviceOrientationEvent !== "undefined" &&
-          typeof DeviceOrientationEvent.requestPermission === "function"
-        ) {
+        if (typeof DeviceOrientationEvent !== "undefined" && typeof DeviceOrientationEvent.requestPermission === "function") {
           try {
             const state = await DeviceOrientationEvent.requestPermission();
-            if (state !== "granted") {
-              tiltButton.textContent = "Tilt permission denied";
-              tiltButton.disabled = true;
-              return;
-            }
-          } catch (err) {
-            tiltButton.textContent = "Tilt not available";
-            tiltButton.disabled = true;
-            return;
-          }
+            if (state !== "granted") { tiltButton.textContent = "Tilt permission denied"; tiltButton.disabled = true; return; }
+          } catch (err) { tiltButton.textContent = "Tilt not available"; tiltButton.disabled = true; return; }
         }
-
-        // Either permission granted or not required
         tiltActive = true;
         tiltButton.classList.add("active");
         tiltButton.textContent = "Tilt snow enabled";
-
         window.addEventListener("deviceorientation", onDeviceOrientation);
       }
 
       tiltButton.addEventListener("click", () => {
-        if (!tiltActive) {
-          enableTilt();
-        } else {
+        if (!tiltActive) enableTilt();
+        else {
           tiltActive = false;
           tiltButton.classList.remove("active");
           tiltButton.textContent = "Enable tilt snow";
+          smoothedBeta = smoothedGamma = 0;
+          snowBack.style.backgroundPosition = "";
+          snowMid.style.backgroundPosition = "";
+          snowFront.style.backgroundPosition = "";
+          snowPileInner.style.transform = "rotateX(0deg) rotateY(0deg)";
+          snowPileTopEl.style.transform = "rotateX(0deg) rotateY(0deg)";
         }
       });
     }
 
+    /* --------------------------
+       Santa flight controller
+         - Ensures Santa always starts fully off-screen and ends fully off-screen.
+         - Appearances are random but never more than MAX_DELAY (10s).
+         - First appearance within a short time so user sees Santa right away.
+    */
+    (function setupSanta() {
+      if (!santaEl) return;
+      if (reduceMotion) { santaEl.style.display = 'none'; return; }
+
+      const MIN_DELAY = 400;
+      const MAX_DELAY = 10000; // 10s maximum between appearances
+
+      let isFlying = false;
+      let nextTimer = null;
+
+      function scheduleNext(immediate=false) {
+        const delay = immediate ? (200 + Math.random()*800) : (MIN_DELAY + Math.random() * (MAX_DELAY - MIN_DELAY));
+        nextTimer = setTimeout(launchSanta, Math.round(delay));
+      }
+
+      function launchSanta() {
+        if (isFlying) return;
+        isFlying = true;
+
+        // random vertical top (percentage)
+        const tops = ['6%','9%','12%','15%','10%'];
+        santaEl.style.top = tops[Math.floor(Math.random()*tops.length)];
+
+        // small random scale
+        const scales = [0.82,0.9,0.95,1,0.88];
+        santaEl.style.transform = `scale(${scales[Math.floor(Math.random()*scales.length)]})`;
+
+        // pick a direction
+        const dir = Math.random() < 0.5 ? 'ltr' : 'rtl';
+
+        // enable transition class and set duration
+        santaEl.classList.add('fly-running');
+
+        // varying speed so it feels natural
+        const duration = 4 + Math.random() * 5; // 4s to 9s
+        santaEl.style.transitionDuration = `${duration}s, 0.6s, 0.2s`;
+
+        // start position off-screen
+        if (dir === 'ltr') {
+          santaEl.style.left = '-40%';
+          // ensure initial left is applied before we animate
+          void santaEl.offsetWidth;
+          santaEl.style.opacity = '1';
+          // animate to right beyond viewport
+          requestAnimationFrame(() => { santaEl.style.left = '120%'; });
+        } else {
+          santaEl.style.left = '120%';
+          void santaEl.offsetWidth;
+          santaEl.style.opacity = '1';
+          requestAnimationFrame(() => { santaEl.style.left = '-40%'; });
+        }
+
+        // finish handler: wait for left transition to end
+        function onFinish(ev) {
+          if (ev.propertyName !== 'left') return;
+          santaEl.removeEventListener('transitionend', onFinish);
+          // fade out quickly
+          santaEl.style.opacity = '0';
+          // mark not flying and schedule next
+          setTimeout(() => { isFlying = false; scheduleNext(); }, 400 + Math.random() * 600);
+        }
+
+        santaEl.addEventListener('transitionend', onFinish);
+      }
+
+      // start soon so the user sees Santa quickly, then schedule subsequent runs normally
+      scheduleNext(true);
+
+      // cleanup
+      window.addEventListener('pagehide', () => { if (nextTimer) clearTimeout(nextTimer); });
+    })();
+
+    // start everything
+    startSnowAccumulation();
     setupDials();
     setupTiltSnow();
   </script>
