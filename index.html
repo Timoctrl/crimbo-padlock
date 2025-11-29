@@ -11,7 +11,8 @@
       -webkit-tap-highlight-color: transparent;
     }
 
-    html, body {
+    html,
+    body {
       margin: 0;
       padding: 0;
       height: 100%;
@@ -25,6 +26,10 @@
       color: #fff;
       position: fixed;
       inset: 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding-top: max(20px, env(safe-area-inset-top, 20px));
     }
 
     /* ------------------------------ */
@@ -36,75 +41,101 @@
       inset: 0;
       pointer-events: none;
       background-repeat: repeat;
-      background-size: 320px 320px;
+      background-size: 220px 220px;
       z-index: 0;
     }
 
     /* BACK SNOW */
     .snow-back {
       background-image:
-        radial-gradient(2px 2px at 10px 20px, rgba(255,255,255,0.25), transparent),
-        radial-gradient(2px 2px at 90px 60px, rgba(255,255,255,0.28), transparent),
-        radial-gradient(2px 2px at 160px 40px, rgba(255,255,255,0.22), transparent),
-        radial-gradient(2px 2px at 210px 130px, rgba(255,255,255,0.25), transparent);
+        radial-gradient(2px 2px at 10px 20px, rgba(255, 255, 255, 0.25), transparent),
+        radial-gradient(2px 2px at 90px 60px, rgba(255, 255, 255, 0.28), transparent),
+        radial-gradient(2px 2px at 160px 40px, rgba(255, 255, 255, 0.22), transparent),
+        radial-gradient(2px 2px at 210px 130px, rgba(255, 255, 255, 0.25), transparent),
+        radial-gradient(2px 2px at 40px 200px, rgba(255, 255, 255, 0.25), transparent),
+        radial-gradient(2px 2px at 200px 250px, rgba(255, 255, 255, 0.2), transparent);
       animation: snowSlow 40s linear infinite;
       z-index: 1;
     }
 
     @keyframes snowSlow {
-      0%   { transform: translateY(-70px); }
-      100% { transform: translateY(70px); }
+      0% {
+        transform: translateY(-70px);
+      }
+      100% {
+        transform: translateY(70px);
+      }
     }
 
     /* MID SNOW (BEHIND LOCK) */
     .snow-mid {
       background-image:
-        radial-gradient(4px 4px at 20px 20px, rgba(255,255,255,0.6), transparent),
-        radial-gradient(4px 4px at 120px 40px, rgba(255,255,255,0.55), transparent),
-        radial-gradient(3px 3px at 60px 180px, rgba(255,255,255,0.5), transparent),
-        radial-gradient(4px 4px at 260px 10px, rgba(255,255,255,0.65), transparent);
+        radial-gradient(4px 4px at 20px 20px, rgba(255, 255, 255, 0.6), transparent),
+        radial-gradient(4px 4px at 120px 40px, rgba(255, 255, 255, 0.55), transparent),
+        radial-gradient(3px 3px at 60px 180px, rgba(255, 255, 255, 0.5), transparent),
+        radial-gradient(4px 4px at 260px 10px, rgba(255, 255, 255, 0.65), transparent),
+        radial-gradient(3px 3px at 180px 240px, rgba(255, 255, 255, 0.6), transparent);
       animation: snowMid 22s linear infinite;
       z-index: 2;
     }
 
     @keyframes snowMid {
-      0%   { transform: translate(-10px, -80px); }
-      100% { transform: translate(10px, 80px); }
+      0% {
+        transform: translate(-10px, -80px);
+      }
+      100% {
+        transform: translate(10px, 80px);
+      }
     }
 
-    /* FRONT SNOW (OVERLOCK) */
+    /* FRONT SNOW (OVER LOCK) */
     .snow-front {
       background-image:
-        radial-gradient(6px 6px at 20px 20px, rgba(255,255,255,0.95), transparent),
-        radial-gradient(5px 5px at 120px 40px, rgba(255,255,255,0.85), transparent),
-        radial-gradient(6px 6px at 220px 120px, rgba(255,255,255,0.9), transparent),
-        radial-gradient(5px 5px at 60px 200px, rgba(255,255,255,0.9), transparent),
-        radial-gradient(4px 4px at 260px 10px, rgba(255,255,255,0.9), transparent);
+        radial-gradient(6px 6px at 20px 20px, rgba(255, 255, 255, 0.95), transparent),
+        radial-gradient(5px 5px at 120px 40px, rgba(255, 255, 255, 0.9), transparent),
+        radial-gradient(6px 6px at 220px 120px, rgba(255, 255, 255, 0.95), transparent),
+        radial-gradient(5px 5px at 60px 200px, rgba(255, 255, 255, 0.95), transparent),
+        radial-gradient(6px 6px at 260px 10px, rgba(255, 255, 255, 0.95), transparent),
+        radial-gradient(5px 5px at 150px 260px, rgba(255, 255, 255, 0.95), transparent);
       animation: snowFast 14s linear infinite;
       z-index: 6; /* on top of padlock */
     }
 
     @keyframes snowFast {
-      0%   { transform: translate(20px, -90px); }
-      100% { transform: translate(-20px, 90px); }
+      0% {
+        transform: translate(20px, -90px);
+      }
+      100% {
+        transform: translate(-20px, 90px);
+      }
     }
 
-    /* SNOW PILE AT THE BOTTOM */
+    /* SNOW PILE AT THE BOTTOM (BEHIND LOCK) */
     .snow-pile {
       position: fixed;
       bottom: 0;
       left: 0;
       right: 0;
       height: 120px;
-      background: radial-gradient(ellipse at bottom, rgba(255,255,255,0.3), rgba(255,255,255,0.05) 70%, transparent);
-      animation: snowPile 10s forwards;
+      background:
+        radial-gradient(ellipse at bottom, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.15) 60%, transparent),
+        radial-gradient(circle at 15% 0, rgba(255, 255, 255, 0.4), transparent 60%),
+        radial-gradient(circle at 85% 0, rgba(255, 255, 255, 0.4), transparent 60%);
+      animation: snowPile 14s forwards;
       z-index: 3; /* behind padlock, above mid-snow */
       pointer-events: none;
+      filter: blur(0.3px);
     }
 
     @keyframes snowPile {
-      0%   { opacity: 0; transform: translateY(40px); }
-      100% { opacity: 1; transform: translateY(0); }
+      0% {
+        opacity: 0;
+        transform: translateY(40px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     /* ------------------------------ */
@@ -116,8 +147,8 @@
       width: 100%;
       max-width: 420px;
       margin: 0 auto;
-      padding-top: 30px;
-      z-index: 5; /* above mid-snow */
+      padding: 0 16px 24px;
+      z-index: 5; /* above mid-snow, below front snow */
     }
 
     .padlock {
@@ -130,15 +161,21 @@
     }
 
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(30px) scale(0.9); }
-      to   { opacity: 1; transform: translateY(0) scale(1);   }
+      from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.9);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
     }
 
     .padlock.open {
       transform: translateY(-4px) scale(1.02);
     }
 
-    /* NEW REALISTIC SHACKLE */
+    /* SHACKLE WITH VISIBLE GAP */
     .shackle {
       position: absolute;
       top: 0;
@@ -146,13 +183,27 @@
       width: 130px;
       height: 95px;
       border: 10px solid #d5d9dd;
-      border-bottom: 30px solid transparent;
+      border-bottom: 32px solid transparent;
       border-radius: 75px 75px 0 0;
       background: radial-gradient(circle at 50% 10%, #ffffff, #c7ccd1 70%);
       transform: translateX(-50%);
       z-index: 5;
-      box-shadow: 0 8px 14px rgba(0,0,0,0.5);
+      box-shadow: 0 8px 14px rgba(0, 0, 0, 0.5);
       transition: transform 0.6s ease;
+    }
+
+    /* "Gap" in the centre of the shackle above the body */
+    .shackle::after {
+      content: "";
+      position: absolute;
+      bottom: -18px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 24px;
+      background: radial-gradient(ellipse at top, #fbeab7, #d6a850 60%, #a36b1e 100%);
+      border-radius: 0 0 14px 14px;
+      box-shadow: 0 -3px 5px rgba(0, 0, 0, 0.4);
     }
 
     .padlock.open .shackle {
@@ -166,7 +217,7 @@
       box-shadow:
         0 16px 28px rgba(0, 0, 0, 0.85),
         inset 0 0 16px rgba(0, 0, 0, 0.4);
-      border: 1px solid rgba(255,245,220,0.9);
+      border: 1px solid rgba(255, 245, 220, 0.9);
       position: relative;
     }
 
@@ -195,7 +246,7 @@
       box-shadow:
         inset 0 0 18px rgba(0, 0, 0, 0.9),
         0 0 8px rgba(0, 0, 0, 0.6);
-      border: 1px solid rgba(255,255,255,0.12);
+      border: 1px solid rgba(255, 255, 255, 0.12);
     }
 
     .dials {
@@ -203,6 +254,7 @@
       justify-content: center;
       gap: 8px;
       margin-bottom: 12px;
+      flex-wrap: nowrap;
     }
 
     .dial {
@@ -214,13 +266,15 @@
       background: linear-gradient(180deg, #232323, #050505);
       border-radius: 10px;
       box-shadow:
-        inset 0 0 8px rgba(0,0,0,0.9),
-        0 4px 7px rgba(0,0,0,0.7);
-      border: 1px solid rgba(255,255,255,0.06);
+        inset 0 0 8px rgba(0, 0, 0, 0.9),
+        0 4px 7px rgba(0, 0, 0, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.06);
       cursor: grab;
     }
 
-    .dial.dragging { cursor: grabbing; }
+    .dial.dragging {
+      cursor: grabbing;
+    }
 
     .dial button {
       border: none;
@@ -230,7 +284,7 @@
       padding: 6px 0;
       width: 100%;
       font-size: 18px;
-      box-shadow: 0 2px 3px rgba(0,0,0,0.7);
+      box-shadow: 0 2px 3px rgba(0, 0, 0, 0.7);
       min-height: 34px;
     }
 
@@ -243,7 +297,7 @@
       color: #00f7ff;
       font-size: 26px;
       border-radius: 6px;
-      box-shadow: inset 0 0 6px rgba(0,0,0,0.9);
+      box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.9);
       touch-action: none;
     }
 
@@ -252,20 +306,66 @@
       font-size: 12px;
       color: #ffe9c0;
       opacity: 0.9;
+      margin-top: 4px;
     }
 
-    .padlock.open .hint { opacity: 0.25; }
+    .padlock.open .hint {
+      opacity: 0.25;
+    }
 
+    /* TILT BUTTON */
+    .tilt-btn {
+      margin: 10px auto 0;
+      padding: 6px 12px;
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      background: rgba(0, 0, 0, 0.45);
+      color: #ffffff;
+      cursor: pointer;
+      display: block;
+    }
+
+    .tilt-btn:disabled {
+      opacity: 0.45;
+      cursor: default;
+    }
+
+    .tilt-btn.active {
+      background: rgba(12, 103, 34, 0.8);
+      border-color: rgba(180, 255, 200, 0.8);
+    }
+
+    /* UNLOCK MESSAGE – DARK GLASS PANEL */
     .message {
       text-align: center;
-      margin-top: 10px;
+      margin-top: 12px;
       font-size: 15px;
+      line-height: 1.4;
       opacity: 0;
-      color: white;
-      transition: opacity 0.4s ease;
+      color: #ffffff;
+      background: rgba(0, 0, 0, 0.78);
+      border-radius: 10px;
+      padding: 8px 10px;
+      text-shadow: 0 0 6px rgba(0, 0, 0, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      transform: translateY(8px);
+      transition: opacity 0.4s ease, transform 0.4s ease;
     }
 
-    .padlock.open .message { opacity: 1; }
+    .message span {
+      display: block;
+      font-size: 13px;
+      margin-top: 3px;
+      color: #e6ffe3;
+    }
+
+    .padlock.open .message {
+      opacity: 1;
+      transform: translateY(0);
+    }
 
     .keyhole {
       margin: 12px auto 0;
@@ -273,7 +373,42 @@
       height: 26px;
       border-radius: 12px;
       background: radial-gradient(circle at 50% 20%, #222, #000);
-      box-shadow: inset 0 0 4px rgba(255,255,255,0.1);
+      box-shadow: inset 0 0 4px rgba(255, 255, 255, 0.1);
+    }
+
+    /* REDUCED MOTION SUPPORT */
+    @media (prefers-reduced-motion: reduce) {
+      .snow-layer,
+      .snow-pile,
+      .padlock {
+        animation: none !important;
+      }
+    }
+
+    /* SMALL SCREEN TWEAKS */
+    @media (max-width: 400px) {
+      .padlock {
+        max-width: 260px;
+        padding-top: 60px;
+      }
+
+      .dial {
+        width: 40px;
+      }
+
+      .title {
+        font-size: 13px;
+        letter-spacing: 0.18em;
+      }
+
+      .subtitle {
+        font-size: 11px;
+        letter-spacing: 0.2em;
+      }
+
+      .message {
+        font-size: 14px;
+      }
     }
   </style>
 </head>
@@ -303,6 +438,10 @@
             <span>When you crack it, your Christmas surprise will unlock…</span>
           </div>
 
+          <button class="tilt-btn" id="tiltButton" type="button">
+            Enable tilt snow
+          </button>
+
           <div class="message" id="message"></div>
           <div class="keyhole"></div>
         </div>
@@ -322,12 +461,21 @@
     const messageEl = document.getElementById("message");
     const unlockSound = document.getElementById("unlockSound");
 
+    const snowBack = document.querySelector(".snow-back");
+    const snowMid = document.querySelector(".snow-mid");
+    const snowFront = document.querySelector(".snow-front");
+    const tiltButton = document.getElementById("tiltButton");
+
     const dialControllers = [];
     let globalDragging = false;
 
-    document.addEventListener("touchmove", e => {
-      if (globalDragging) e.preventDefault();
-    }, { passive: false });
+    document.addEventListener(
+      "touchmove",
+      (e) => {
+        if (globalDragging) e.preventDefault();
+      },
+      { passive: false }
+    );
 
     function createDial(initialLetter = "A") {
       const dial = document.createElement("div");
@@ -355,12 +503,20 @@
         checkCode();
       }
 
-      upBtn.onclick = () => { index = (index + 1) % letters.length; updateDisplay(); };
-      downBtn.onclick = () => { index = (index - 1 + letters.length) % letters.length; updateDisplay(); };
+      upBtn.onclick = () => {
+        index = (index + 1) % letters.length;
+        updateDisplay();
+      };
+      downBtn.onclick = () => {
+        index = (index - 1 + letters.length) % letters.length;
+        updateDisplay();
+      };
 
       // DRAGGING
       const STEP = 26;
-      let dragging = false, lastY = 0, accum = 0;
+      let dragging = false,
+        lastY = 0,
+        accum = 0;
 
       function start(y) {
         dragging = true;
@@ -375,8 +531,16 @@
         accum += dy;
         lastY = y;
 
-        while (accum <= -STEP) { index = (index + 1) % letters.length; accum += STEP; updateDisplay(); }
-        while (accum >= STEP) { index = (index - 1 + letters.length) % letters.length; accum -= STEP; updateDisplay(); }
+        while (accum <= -STEP) {
+          index = (index + 1) % letters.length;
+          accum += STEP;
+          updateDisplay();
+        }
+        while (accum >= STEP) {
+          index = (index - 1 + letters.length) % letters.length;
+          accum -= STEP;
+          updateDisplay();
+        }
       }
 
       function end() {
@@ -385,9 +549,15 @@
         dial.classList.remove("dragging");
       }
 
-      display.addEventListener("pointerdown", e => { display.setPointerCapture(e.pointerId); start(e.clientY); });
-      display.addEventListener("pointermove", e => { if (dragging) move(e.clientY); });
+      display.addEventListener("pointerdown", (e) => {
+        display.setPointerCapture(e.pointerId);
+        start(e.clientY);
+      });
+      display.addEventListener("pointermove", (e) => {
+        if (dragging) move(e.clientY);
+      });
       display.addEventListener("pointerup", end);
+      display.addEventListener("pointercancel", end);
 
       return { element: dial, getLetter: () => letters[index] };
     }
@@ -401,16 +571,103 @@
     }
 
     function checkCode() {
-      const attempt = dialControllers.map(c => c.getLetter()).join("");
+      const attempt = dialControllers.map((c) => c.getLetter()).join("");
       if (attempt === CODE && !padlockEl.classList.contains("open")) {
         padlockEl.classList.add("open");
-        messageEl.innerHTML = SUCCESS_MESSAGE_MAIN + "<br><span>" + SUCCESS_MESSAGE_SUB + "</span>";
+        messageEl.innerHTML =
+          SUCCESS_MESSAGE_MAIN + "<br><span>" + SUCCESS_MESSAGE_SUB + "</span>";
         unlockSound.currentTime = 0;
-        unlockSound.play().catch(()=>{});
+        unlockSound.play().catch(() => {});
       }
     }
 
+    function setupTiltSnow() {
+      if (!tiltButton) return;
+
+      // Respect reduced-motion preference
+      const reduceMotion =
+        window.matchMedia &&
+        window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      const hasOrientation = "DeviceOrientationEvent" in window;
+
+      if (!hasOrientation || reduceMotion) {
+        // Hide button if we can’t/shouldn’t use tilt
+        tiltButton.style.display = "none";
+        return;
+      }
+
+      let tiltActive = false;
+
+      function onDeviceOrientation(event) {
+        if (!tiltActive) return;
+
+        // gamma: left/right tilt, beta: forward/back tilt
+        const gamma = event.gamma || 0; // -90 to 90
+        const beta = event.beta || 0; // -180 to 180
+
+        const clamp = (v, min, max) => Math.max(min, Math.min(max, v));
+
+        const xNorm = clamp(gamma, -30, 30) / 30; // -1 to 1
+        const yNorm = clamp(beta, -30, 30) / 30;
+
+        // Horizontal drift (parallax) in px
+        const xBack = xNorm * 8;
+        const xMid = xNorm * 14;
+        const xFront = xNorm * 20;
+
+        // Slight vertical drift
+        const yBack = yNorm * 4;
+        const yMid = yNorm * 6;
+        const yFront = yNorm * 8;
+
+        // Keep CSS falling animations and only nudge background positions
+        snowBack.style.backgroundPosition = `${xBack}px ${yBack}px`;
+        snowMid.style.backgroundPosition = `${xMid}px ${yMid}px`;
+        snowFront.style.backgroundPosition = `${xFront}px ${yFront}px`;
+      }
+
+      async function enableTilt() {
+        // iOS / WebKit: must request permission from user gesture
+        if (
+          typeof DeviceOrientationEvent !== "undefined" &&
+          typeof DeviceOrientationEvent.requestPermission === "function"
+        ) {
+          try {
+            const state = await DeviceOrientationEvent.requestPermission();
+            if (state !== "granted") {
+              tiltButton.textContent = "Tilt permission denied";
+              tiltButton.disabled = true;
+              return;
+            }
+          } catch (err) {
+            tiltButton.textContent = "Tilt not available";
+            tiltButton.disabled = true;
+            return;
+          }
+        }
+
+        // Either permission granted or not required
+        tiltActive = true;
+        tiltButton.classList.add("active");
+        tiltButton.textContent = "Tilt snow enabled";
+
+        window.addEventListener("deviceorientation", onDeviceOrientation);
+      }
+
+      tiltButton.addEventListener("click", () => {
+        if (!tiltActive) {
+          enableTilt();
+        } else {
+          tiltActive = false;
+          tiltButton.classList.remove("active");
+          tiltButton.textContent = "Enable tilt snow";
+        }
+      });
+    }
+
     setupDials();
+    setupTiltSnow();
   </script>
 </body>
 </html>
