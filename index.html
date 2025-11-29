@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <title>Ellie’s Christmas Escape Padlock</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+
   <style>
     * {
       box-sizing: border-box;
@@ -14,228 +15,194 @@
       margin: 0;
       padding: 0;
       height: 100%;
+      overflow: hidden;
     }
 
+    /* NIGHT SKY BACKGROUND ALWAYS FULL SCREEN */
     body {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: radial-gradient(circle at top, #081326 0, #050814 55%, #010208 100%);
+      background: radial-gradient(circle at top, #081326 0, #030713 55%, #000 100%);
       font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", sans-serif;
       color: #fff;
-      overflow: hidden;
-      user-select: none;
-      -webkit-user-select: none;
-      touch-action: manipulation;
-    }
-
-    .app-shell {
-      width: 100%;
-      max-width: 420px;
-      padding: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      z-index: 2; /* above snow */
-    }
-
-    /* SNOW-GLOBE SNOW: back layer */
-    .snow {
-      pointer-events: none;
       position: fixed;
       inset: 0;
-      background-repeat: repeat;
-      background-size: 260px 260px;
-      opacity: 0.6;
     }
 
-    .snow-back {
-      background-image:
-        radial-gradient(2px 2px at 10px 20px, rgba(255, 255, 255, 0.6), transparent),
-        radial-gradient(2px 2px at 80px 60px, rgba(255, 255, 255, 0.5), transparent),
-        radial-gradient(2px 2px at 160px 40px, rgba(255, 255, 255, 0.55), transparent),
-        radial-gradient(2px 2px at 220px 120px, rgba(255, 255, 255, 0.6), transparent);
-      animation: snow-back-fall 40s linear infinite;
+    /* ------------------------------ */
+    /* SNOW LAYERS                     */
+    /* ------------------------------ */
+
+    .snow-layer {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-repeat: repeat;
+      background-size: 320px 320px;
       z-index: 0;
     }
 
-    .snow-front {
+    /* BACK SNOW */
+    .snow-back {
       background-image:
-        radial-gradient(5px 5px at 20px 20px, rgba(255, 255, 255, 0.95), transparent),
-        radial-gradient(4px 4px at 120px 40px, rgba(255, 255, 255, 0.85), transparent),
-        radial-gradient(5px 5px at 220px 120px, rgba(255, 255, 255, 0.9), transparent),
-        radial-gradient(3px 3px at 60px 180px, rgba(255, 255, 255, 0.8), transparent),
-        radial-gradient(4px 4px at 260px 10px, rgba(255, 255, 255, 0.9), transparent);
-      animation: snow-front-fall 18s linear infinite;
+        radial-gradient(2px 2px at 10px 20px, rgba(255,255,255,0.25), transparent),
+        radial-gradient(2px 2px at 90px 60px, rgba(255,255,255,0.28), transparent),
+        radial-gradient(2px 2px at 160px 40px, rgba(255,255,255,0.22), transparent),
+        radial-gradient(2px 2px at 210px 130px, rgba(255,255,255,0.25), transparent);
+      animation: snowSlow 40s linear infinite;
       z-index: 1;
     }
 
-    @keyframes snow-back-fall {
-      0%   { transform: translateY(-60px); }
-      100% { transform: translateY(60px); }
+    @keyframes snowSlow {
+      0%   { transform: translateY(-70px); }
+      100% { transform: translateY(70px); }
     }
 
-    @keyframes snow-front-fall {
-      0%   { transform: translate(-30px, -80px); }
-      100% { transform: translate(30px, 80px); }
+    /* MID SNOW (BEHIND LOCK) */
+    .snow-mid {
+      background-image:
+        radial-gradient(4px 4px at 20px 20px, rgba(255,255,255,0.6), transparent),
+        radial-gradient(4px 4px at 120px 40px, rgba(255,255,255,0.55), transparent),
+        radial-gradient(3px 3px at 60px 180px, rgba(255,255,255,0.5), transparent),
+        radial-gradient(4px 4px at 260px 10px, rgba(255,255,255,0.65), transparent);
+      animation: snowMid 22s linear infinite;
+      z-index: 2;
     }
 
-    /* Scene glow behind padlock (cosy candlelight) */
-    .scene {
-      position: relative;
+    @keyframes snowMid {
+      0%   { transform: translate(-10px, -80px); }
+      100% { transform: translate(10px, 80px); }
     }
 
-    .scene::before {
-      content: "";
-      position: absolute;
-      inset: -80px;
-      background:
-        radial-gradient(circle at 50% 20%, rgba(255, 230, 170, 0.24), transparent 60%),
-        radial-gradient(circle at 50% 80%, rgba(0, 0, 0, 0.7), transparent 80%);
-      z-index: -1;
+    /* FRONT SNOW (OVERLOCK) */
+    .snow-front {
+      background-image:
+        radial-gradient(6px 6px at 20px 20px, rgba(255,255,255,0.95), transparent),
+        radial-gradient(5px 5px at 120px 40px, rgba(255,255,255,0.85), transparent),
+        radial-gradient(6px 6px at 220px 120px, rgba(255,255,255,0.9), transparent),
+        radial-gradient(5px 5px at 60px 200px, rgba(255,255,255,0.9), transparent),
+        radial-gradient(4px 4px at 260px 10px, rgba(255,255,255,0.9), transparent);
+      animation: snowFast 14s linear infinite;
+      z-index: 6; /* on top of padlock */
+    }
+
+    @keyframes snowFast {
+      0%   { transform: translate(20px, -90px); }
+      100% { transform: translate(-20px, 90px); }
+    }
+
+    /* SNOW PILE AT THE BOTTOM */
+    .snow-pile {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 120px;
+      background: radial-gradient(ellipse at bottom, rgba(255,255,255,0.3), rgba(255,255,255,0.05) 70%, transparent);
+      animation: snowPile 10s forwards;
+      z-index: 3; /* behind padlock, above mid-snow */
       pointer-events: none;
     }
 
-    /* THE PADLOCK */
-    .padlock {
-      position: relative;
-      width: 100%;
-      max-width: 320px;
-      padding-top: 70px; /* space for shackle */
-      z-index: 2;
-      animation: padlock-in 0.6s ease-out both;
-      transform-origin: center bottom;
+    @keyframes snowPile {
+      0%   { opacity: 0; transform: translateY(40px); }
+      100% { opacity: 1; transform: translateY(0); }
     }
 
-    @keyframes padlock-in {
-      0% {
-        transform: translateY(40px) scale(0.92);
-        opacity: 0;
-      }
-      100% {
-        transform: translateY(0) scale(1);
-        opacity: 1;
-      }
+    /* ------------------------------ */
+    /* FOREGROUND SCENE (PADLOCK)      */
+    /* ------------------------------ */
+
+    .app-shell {
+      position: relative;
+      width: 100%;
+      max-width: 420px;
+      margin: 0 auto;
+      padding-top: 30px;
+      z-index: 5; /* above mid-snow */
+    }
+
+    .padlock {
+      position: relative;
+      margin: 0 auto;
+      max-width: 300px;
+      padding-top: 70px;
+      animation: fadeIn 0.7s ease-out both;
+      z-index: 5;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(30px) scale(0.9); }
+      to   { opacity: 1; transform: translateY(0) scale(1);   }
     }
 
     .padlock.open {
       transform: translateY(-4px) scale(1.02);
     }
 
-    /* Metal shackle */
+    /* NEW REALISTIC SHACKLE */
     .shackle {
       position: absolute;
       top: 0;
       left: 50%;
-      width: 120px;
-      height: 90px;
-      border: 10px solid #e9edf0;
-      border-bottom: none;
-      border-radius: 70px 70px 0 0;
-      background: radial-gradient(circle at top, #ffffff, #cfd3d8);
+      width: 130px;
+      height: 95px;
+      border: 10px solid #d5d9dd;
+      border-bottom: 30px solid transparent;
+      border-radius: 75px 75px 0 0;
+      background: radial-gradient(circle at 50% 10%, #ffffff, #c7ccd1 70%);
       transform: translateX(-50%);
+      z-index: 5;
+      box-shadow: 0 8px 14px rgba(0,0,0,0.5);
       transition: transform 0.6s ease;
-      transform-origin: left bottom;
-      box-shadow: 0 10px 16px rgba(0, 0, 0, 0.75);
     }
 
     .padlock.open .shackle {
-      transform: translate(-35px, -20px) rotate(-26deg);
+      transform: translate(-38px, -25px) rotate(-22deg);
     }
 
-    .holly {
-      position: absolute;
-      top: 4px;
-      right: 18px;
-      font-size: 22px;
-      transform: rotate(8deg);
-      text-shadow: 0 0 6px rgba(0, 0, 0, 0.8);
-    }
-
-    .name-tag {
-      position: absolute;
-      top: 6px;
-      left: 18px;
-      padding: 4px 10px;
-      background: #ffe9b3;
-      color: #5b1c21;
-      font-size: 12px;
-      border-radius: 14px;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .name-tag span {
-      font-size: 11px;
-      opacity: 0.9;
-    }
-
-    /* Gold lock body */
     .lock-body {
-      margin: 0 auto;
+      background: linear-gradient(180deg, #fbeab7, #d6a850 60%, #a36b1e 100%);
       padding: 18px 14px 22px;
-      background: linear-gradient(180deg, #f8e6b0, #d6a851 55%, #a56e21 100%);
       border-radius: 20px;
       box-shadow:
         0 16px 28px rgba(0, 0, 0, 0.85),
         inset 0 0 16px rgba(0, 0, 0, 0.4);
-      border: 1px solid rgba(255, 245, 215, 0.9);
+      border: 1px solid rgba(255,245,220,0.9);
       position: relative;
     }
 
-    .lock-body::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      border-radius: inherit;
-      border: 1px solid rgba(255, 255, 255, 0.4);
-      pointer-events: none;
-      opacity: 0.9;
-    }
-
     .title {
+      text-align: center;
       font-size: 15px;
       letter-spacing: 0.22em;
       text-transform: uppercase;
-      margin-bottom: 2px;
-      opacity: 0.95;
-      color: #3a1c08;
-      text-align: center;
+      color: #351f0a;
+      margin-bottom: 3px;
     }
 
     .subtitle {
+      text-align: center;
       font-size: 12px;
       letter-spacing: 0.25em;
       text-transform: uppercase;
-      margin-bottom: 12px;
       color: #5a310f;
-      opacity: 0.9;
-      text-align: center;
+      margin-bottom: 14px;
     }
 
-    /* Dark plate on the lock where the wheels live */
     .dial-plate {
-      padding: 14px 10px 18px;
-      background: radial-gradient(circle at top, #28392b, #111b13 55%, #050806 100%);
+      background: radial-gradient(circle at top, #28422c, #111b13 60%, #050806 100%);
+      padding: 14px 10px 16px;
       border-radius: 14px;
       box-shadow:
         inset 0 0 18px rgba(0, 0, 0, 0.9),
         0 0 8px rgba(0, 0, 0, 0.6);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      position: relative;
+      border: 1px solid rgba(255,255,255,0.12);
     }
 
     .dials {
       display: flex;
       justify-content: center;
       gap: 8px;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
     }
 
     .dial {
@@ -243,23 +210,17 @@
       flex-direction: column;
       align-items: center;
       padding: 6px 5px;
+      width: 46px;
       background: linear-gradient(180deg, #232323, #050505);
       border-radius: 10px;
       box-shadow:
-        inset 0 0 8px rgba(0, 0, 0, 0.9),
-        0 4px 7px rgba(0, 0, 0, 0.8);
-      width: 46px;
-      border: 1px solid rgba(255, 255, 255, 0.06);
+        inset 0 0 8px rgba(0,0,0,0.9),
+        0 4px 7px rgba(0,0,0,0.7);
+      border: 1px solid rgba(255,255,255,0.06);
       cursor: grab;
     }
 
-    .dial.dragging {
-      cursor: grabbing;
-      box-shadow:
-        inset 0 0 10px rgba(0, 0, 0, 1),
-        0 5px 12px rgba(0, 0, 0, 1);
-      transform: translateY(1px);
-    }
+    .dial.dragging { cursor: grabbing; }
 
     .dial button {
       border: none;
@@ -268,19 +229,9 @@
       border-radius: 6px;
       padding: 6px 0;
       width: 100%;
-      cursor: pointer;
       font-size: 18px;
-      line-height: 1;
-      transition: background 0.15s ease, transform 0.05s ease, box-shadow 0.15s ease;
-      box-shadow: 0 2px 3px rgba(0, 0, 0, 0.7);
-      touch-action: manipulation;
+      box-shadow: 0 2px 3px rgba(0,0,0,0.7);
       min-height: 34px;
-    }
-
-    .dial button:active {
-      transform: translateY(1px);
-      background: linear-gradient(180deg, #226529, #123916);
-      box-shadow: 0 1px 1px rgba(0, 0, 0, 0.7);
     }
 
     .display {
@@ -288,133 +239,83 @@
       padding: 7px 0;
       width: 100%;
       text-align: center;
-      font-size: 26px;
-      letter-spacing: 0.18em;
       background: #000;
       color: #00f7ff;
+      font-size: 26px;
       border-radius: 6px;
-      box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.9);
-      font-weight: 600;
-      text-shadow: 0 0 8px rgba(0, 247, 255, 0.9);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      touch-action: none; /* stop page scroll on drag target */
-    }
-
-    /* Keyhole at bottom of the lock body */
-    .keyhole {
-      position: absolute;
-      bottom: 10px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 18px;
-      height: 26px;
-      border-radius: 10px;
-      background: radial-gradient(circle at 50% 25%, #222 0, #000 45%, transparent 46%),
-                  linear-gradient(180deg, #000 50%, transparent 50%);
-      box-shadow:
-        0 0 4px rgba(0, 0, 0, 0.9),
-        inset 0 0 4px rgba(255, 255, 255, 0.08);
+      box-shadow: inset 0 0 6px rgba(0,0,0,0.9);
+      touch-action: none;
     }
 
     .hint {
-      margin-top: 8px;
-      font-size: 12px;
-      opacity: 0.9;
-      line-height: 1.4;
-      color: #ffe9c0;
       text-align: center;
+      font-size: 12px;
+      color: #ffe9c0;
+      opacity: 0.9;
     }
 
-    .hint span {
-      color: #ffd27f;
-    }
-
-    .padlock.open .hint {
-      opacity: 0.25; /* fade hint when unlocked */
-    }
+    .padlock.open .hint { opacity: 0.25; }
 
     .message {
+      text-align: center;
       margin-top: 10px;
       font-size: 15px;
-      font-weight: 600;
-      letter-spacing: 0.06em;
       opacity: 0;
-      transform: translateY(6px);
-      transition: opacity 0.5s ease, transform 0.5s ease;
-      color: #ffffff;
-      text-align: center;
+      color: white;
+      transition: opacity 0.4s ease;
     }
 
-    .padlock.open .message {
-      opacity: 1;
-      transform: translateY(0);
-    }
+    .padlock.open .message { opacity: 1; }
 
-    .message span {
-      display: block;
-      font-size: 13px;
-      font-weight: 400;
-      margin-top: 6px;
-      opacity: 0.95;
-      color: #e8ffe8;
-    }
-
-    @media (max-width: 480px) {
-      .padlock { max-width: 300px; }
-      .display {
-        font-size: 24px;
-        letter-spacing: 0.14em;
-      }
+    .keyhole {
+      margin: 12px auto 0;
+      width: 18px;
+      height: 26px;
+      border-radius: 12px;
+      background: radial-gradient(circle at 50% 20%, #222, #000);
+      box-shadow: inset 0 0 4px rgba(255,255,255,0.1);
     }
   </style>
 </head>
-<body>
-  <!-- snow layers -->
-  <div class="snow snow-back"></div>
-  <div class="snow snow-front"></div>
 
-  <audio id="unlockSound" src="unlock.mp3" preload="auto"></audio>
+<body>
+  <!-- SNOW LAYERS -->
+  <div class="snow-layer snow-back"></div>
+  <div class="snow-layer snow-mid"></div>
+  <div class="snow-layer snow-front"></div>
+  <div class="snow-pile"></div>
+
+  <audio id="unlockSound" src="unlock.mp3"></audio>
 
   <div class="app-shell">
-    <div class="scene">
-      <div class="padlock" id="padlock">
-        <div class="shackle"></div>
-        <div class="holly">🎄</div>
-        <div class="name-tag">
-          🎁 <span>For Ellie</span>
-        </div>
+    <div class="padlock" id="padlock">
+      <div class="shackle"></div>
 
-        <div class="lock-body">
-          <div class="title">ELLIE’S ESCAPE</div>
-          <div class="subtitle">CHRISTMAS EDITION</div>
+      <div class="lock-body">
+        <div class="title">ELLIE’S ESCAPE</div>
+        <div class="subtitle">CHRISTMAS EDITION</div>
 
-          <div class="dial-plate">
-            <div class="dials" id="dials"></div>
+        <div class="dial-plate">
+          <div class="dials" id="dials"></div>
 
-            <div class="hint">
-              Ellie, drag or tap the dials to find the secret 6-letter word.
-              <span>When you crack it, your Christmas surprise will unlock…</span>
-            </div>
-
-            <div class="message" id="message"></div>
-            <div class="keyhole"></div>
+          <div class="hint">
+            Ellie, drag or tap the dials to find the secret 6-letter word.<br>
+            <span>When you crack it, your Christmas surprise will unlock…</span>
           </div>
+
+          <div class="message" id="message"></div>
+          <div class="keyhole"></div>
         </div>
       </div>
     </div>
   </div>
 
   <script>
-    // ===== CONFIG =====
     const CODE = "GLOVES";
 
     const SUCCESS_MESSAGE_MAIN = "Unlocked, Ellie! Merry Christmas!";
-    const SUCCESS_MESSAGE_SUB =
-      "You found the key – check inside the gloves.";
+    const SUCCESS_MESSAGE_SUB = "You found the key – check inside the gloves.";
 
-    // ===== DIAL / LOCK LOGIC =====
     const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
     const dialsContainer = document.getElementById("dials");
     const padlockEl = document.getElementById("padlock");
@@ -424,14 +325,9 @@
     const dialControllers = [];
     let globalDragging = false;
 
-    // prevent page scroll while dragging
-    document.addEventListener(
-      "touchmove",
-      (e) => {
-        if (globalDragging) e.preventDefault();
-      },
-      { passive: false }
-    );
+    document.addEventListener("touchmove", e => {
+      if (globalDragging) e.preventDefault();
+    }, { passive: false });
 
     function createDial(initialLetter = "A") {
       const dial = document.createElement("div");
@@ -459,144 +355,58 @@
         checkCode();
       }
 
-      upBtn.addEventListener("click", () => {
-        index = (index + 1) % letters.length;
-        updateDisplay();
-      });
+      upBtn.onclick = () => { index = (index + 1) % letters.length; updateDisplay(); };
+      downBtn.onclick = () => { index = (index - 1 + letters.length) % letters.length; updateDisplay(); };
 
-      downBtn.addEventListener("click", () => {
-        index = (index - 1 + letters.length) % letters.length;
-        updateDisplay();
-      });
+      // DRAGGING
+      const STEP = 26;
+      let dragging = false, lastY = 0, accum = 0;
 
-      // drag-to-rotate
-      const STEP_PIXELS = 26;
-      let dragging = false;
-      let lastY = 0;
-      let accum = 0;
-
-      function startDrag(clientY) {
+      function start(y) {
         dragging = true;
         globalDragging = true;
-        lastY = clientY;
+        lastY = y;
         accum = 0;
         dial.classList.add("dragging");
       }
 
-      function moveDrag(clientY) {
-        if (!dragging) return;
-        const dy = clientY - lastY;
+      function move(y) {
+        const dy = y - lastY;
         accum += dy;
-        lastY = clientY;
+        lastY = y;
 
-        while (accum <= -STEP_PIXELS) {
-          index = (index + 1) % letters.length;
-          accum += STEP_PIXELS;
-          updateDisplay();
-        }
-        while (accum >= STEP_PIXELS) {
-          index = (index - 1 + letters.length) % letters.length;
-          accum -= STEP_PIXELS;
-          updateDisplay();
-        }
+        while (accum <= -STEP) { index = (index + 1) % letters.length; accum += STEP; updateDisplay(); }
+        while (accum >= STEP) { index = (index - 1 + letters.length) % letters.length; accum -= STEP; updateDisplay(); }
       }
 
-      function endDrag() {
-        if (!dragging) return;
+      function end() {
         dragging = false;
         globalDragging = false;
         dial.classList.remove("dragging");
       }
 
-      if (window.PointerEvent) {
-        display.addEventListener("pointerdown", (e) => {
-          e.preventDefault();
-          display.setPointerCapture(e.pointerId);
-          startDrag(e.clientY);
-        });
+      display.addEventListener("pointerdown", e => { display.setPointerCapture(e.pointerId); start(e.clientY); });
+      display.addEventListener("pointermove", e => { if (dragging) move(e.clientY); });
+      display.addEventListener("pointerup", end);
 
-        display.addEventListener("pointermove", (e) => {
-          if (!dragging) return;
-          e.preventDefault();
-          moveDrag(e.clientY);
-        });
-
-        display.addEventListener("pointerup", (e) => {
-          e.preventDefault();
-          endDrag();
-        });
-
-        display.addEventListener("pointercancel", (e) => {
-          e.preventDefault();
-          endDrag();
-        });
-      } else {
-        display.addEventListener("touchstart", (e) => {
-          if (e.touches.length > 0) {
-            e.preventDefault();
-            startDrag(e.touches[0].clientY);
-          }
-        });
-
-        display.addEventListener("touchmove", (e) => {
-          if (!dragging || e.touches.length === 0) return;
-          e.preventDefault();
-          moveDrag(e.touches[0].clientY);
-        });
-
-        display.addEventListener("touchend", (e) => {
-          e.preventDefault();
-          endDrag();
-        });
-
-        display.addEventListener("mousedown", (e) => {
-          e.preventDefault();
-          startDrag(e.clientY);
-
-          const moveHandler = (ev) => moveDrag(ev.clientY);
-          const upHandler = () => {
-            endDrag();
-            window.removeEventListener("mousemove", moveHandler);
-            window.removeEventListener("mouseup", upHandler);
-          };
-
-          window.addEventListener("mousemove", moveHandler);
-          window.addEventListener("mouseup", upHandler);
-        });
-      }
-
-      return {
-        element: dial,
-        getLetter: () => letters[index],
-      };
+      return { element: dial, getLetter: () => letters[index] };
     }
 
     function setupDials() {
       for (let i = 0; i < CODE.length; i++) {
-        const controller = createDial("A");
-        dialControllers.push(controller);
-        dialsContainer.appendChild(controller.element);
+        const c = createDial("A");
+        dialControllers.push(c);
+        dialsContainer.appendChild(c.element);
       }
     }
 
     function checkCode() {
-      const attempt = dialControllers.map((c) => c.getLetter()).join("");
+      const attempt = dialControllers.map(c => c.getLetter()).join("");
       if (attempt === CODE && !padlockEl.classList.contains("open")) {
         padlockEl.classList.add("open");
-        messageEl.innerHTML =
-          SUCCESS_MESSAGE_MAIN +
-          "<span>" +
-          SUCCESS_MESSAGE_SUB +
-          "</span>";
-
-        if (unlockSound) {
-          try {
-            unlockSound.currentTime = 0;
-            unlockSound.play();
-          } catch (e) {
-            console.warn("Could not play sound:", e);
-          }
-        }
+        messageEl.innerHTML = SUCCESS_MESSAGE_MAIN + "<br><span>" + SUCCESS_MESSAGE_SUB + "</span>";
+        unlockSound.currentTime = 0;
+        unlockSound.play().catch(()=>{});
       }
     }
 
