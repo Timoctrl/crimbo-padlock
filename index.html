@@ -175,6 +175,7 @@
       transition:transform .6s ease;
       transform-origin:20% 20%;
     }
+    /* Removed the dark semicircle by clearing the inner background and inner shadow */
     .shackle::before {
       content:"";
       position:absolute;
@@ -184,8 +185,8 @@
       height:92px;
       border-radius:60px 60px 0 0;
       transform:translateX(-50%);
-      background: radial-gradient(circle at 50% 0, #0b1527 0, #030713 55%, #000 100%);
-      box-shadow: inset 0 4px 6px rgba(0,0,0,0.45);
+      background: transparent;
+      box-shadow: none;
     }
     .shackle::after {
       content:"";
@@ -353,43 +354,125 @@
 <body>
   <!-- SANTA -->
   <div class="santa" id="santa" aria-hidden="true">
-    <svg viewBox="0 0 300 90" width="100%" height="100%" preserveAspectRatio="xMinYMid meet" aria-hidden="true">
-      <g stroke="none" transform="translate(0,6)">
+    <!-- Improved sleigh + reindeer SVG for a more realistic look -->
+    <svg viewBox="0 0 300 90" width="100%" height="100%" preserveAspectRatio="xMinYMid meet" aria-hidden="true" role="img" focusable="false">
+      <defs>
+        <!-- Wood gradient -->
+        <linearGradient id="wood" x1="0" x2="1" y1="0" y2="1">
+          <stop offset="0" stop-color="#8b4a2b"/>
+          <stop offset="0.5" stop-color="#6b331b"/>
+          <stop offset="1" stop-color="#4a1f12"/>
+        </linearGradient>
+        <linearGradient id="wood-highlight" x1="0" x2="1">
+          <stop offset="0" stop-color="rgba(255,230,200,0.35)"/>
+          <stop offset="1" stop-color="rgba(255,230,200,0)"/>
+        </linearGradient>
+        <!-- Metal runner gradient -->
+        <linearGradient id="metal" x1="0" x2="1">
+          <stop offset="0" stop-color="#d7d9db"/>
+          <stop offset="0.5" stop-color="#bfc3c6"/>
+          <stop offset="1" stop-color="#9aa0a4"/>
+        </linearGradient>
+        <!-- Seat fabric -->
+        <linearGradient id="seat" x1="0" x2="0" y1="0" y2="1">
+          <stop offset="0" stop-color="#b22a2a"/>
+          <stop offset="1" stop-color="#7a1b1b"/>
+        </linearGradient>
+        <!-- Reindeer fill -->
+        <linearGradient id="deerFill" x1="0" x2="1">
+          <stop offset="0" stop-color="#e5c6a0"/>
+          <stop offset="1" stop-color="#b78a60"/>
+        </linearGradient>
+        <!-- Shadow filter -->
+        <filter id="softShadow" x="-50%" y="-50%" width="200%" height="200%">
+          <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#000" flood-opacity="0.35"/>
+        </filter>
+      </defs>
+
+      <g transform="translate(0,6)" stroke="none">
         <!-- Sleigh body -->
-        <path d="M10 50 Q40 70 90 70 L200 70 Q230 70 250 58 L240 56 Q225 66 200 66 L110 66 Q60 66 10 50 Z"
-              fill="#f8d79b"/>
-        <!-- Seat -->
-        <rect x="120" y="26" width="36" height="18" rx="4" fill="#c0383e"/>
-        <!-- Driver head -->
-        <circle cx="126" cy="22" r="6" fill="#ffe6c9"/>
-        <!-- Hat -->
-        <rect x="122" y="16" width="8" height="6" rx="2" fill="#d7263d"/>
-        <circle cx="130" cy="16" r="2" fill="#ffffff"/>
-        <!-- Runners -->
-        <path d="M20 74 L68 74" stroke="#f2f2f2" stroke-width="4" stroke-linecap="round" />
-        <path d="M108 74 L198 74" stroke="#f2f2f2" stroke-width="4" stroke-linecap="round" />
-        <!-- Rope -->
-        <path d="M250 50 Q270 48 284 40" stroke="#f7e0a3" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" />
-        <!-- Reindeer 1 -->
-        <g transform="translate(264,16) scale(1)">
-          <path d="M0 10 L6 6 L12 10 L10 14 L14 16 L9 18 L7 22 L2 20 Z" fill="#f4d3a1"/>
-          <path d="M-18 6 L-12 0 L-8 2 L-6 6 L-2 4 L-4 8 L-10 10 Z" fill="#f4d3a1"/>
-          <circle cx="13" cy="11" r="1.6" fill="#ff4d4d"/>
+        <g transform="translate(18,18)">
+          <!-- main wooden shell -->
+          <path d="M0 24 C12 2 65 0 98 0 C125 0 190 6 220 24 C200 36 90 56 30 54 C10 54 0 40 0 24 Z"
+                fill="url(#wood)" />
+          <!-- wood grain/highlight -->
+          <path d="M6 26 C40 10 120 8 170 24 C135 34 70 46 34 44 C16 44 8 36 6 26 Z"
+                fill="url(#wood-highlight)" opacity="0.65"/>
+          <!-- decorative trim -->
+          <path d="M0 28 L6 28 C40 16 120 14 170 28 L216 28" stroke="#ffd8a6" stroke-width="2.2" fill="none" opacity="0.9"/>
+          <!-- seat cushion -->
+          <rect x="110" y="0" width="36" height="20" rx="4" fill="url(#seat)" stroke="#3b0f0f" stroke-width="0.8"/>
+          <!-- cushion top stitch -->
+          <path d="M112 6 C126 2 134 2 144 6" stroke="rgba(255,255,255,0.12)" stroke-width="1.6" fill="none" opacity="0.9"/>
+          <!-- padded back -->
+          <rect x="106" y="-6" width="44" height="8" rx="3" fill="#5b1212" opacity="0.9"/>
         </g>
-        <!-- Reindeer 2 -->
-        <g transform="translate(285,8) scale(.92)">
-          <path d="M0 10 L6 6 L12 10 L10 14 L14 16 L9 18 L7 22 L2 20 Z" fill="#f4d3a1"/>
-          <path d="M-18 6 L-12 0 L-8 2 L-6 6 L-2 4 L-4 8 L-10 10 Z" fill="#f4d3a1"/>
-          <circle cx="13" cy="11" r="1.6" fill="#ff4d4d"/>
+
+        <!-- Runners and metal details -->
+        <g transform="translate(8,66)">
+          <path d="M8 0 C28 -4 110 -4 164 0" stroke="url(#metal)" stroke-width="6" stroke-linecap="round" fill="none" filter="url(#softShadow)"/>
+          <path d="M12 6 C32 2 112 2 160 6" stroke="#2a2a2a" stroke-width="1" stroke-linecap="round" opacity="0.25" fill="none"/>
+          <path d="M0 0 C20 -6 132 -6 188 0" stroke="url(#metal)" stroke-width="3" stroke-linecap="round" opacity="0.6"/>
         </g>
-        <!-- Reindeer 3 -->
-        <g transform="translate(305,20) scale(.86)">
-          <path d="M0 10 L6 6 L12 10 L10 14 L14 16 L9 18 L7 22 L2 20 Z" fill="#f4d3a1"/>
-          <path d="M-18 6 L-12 0 L-8 2 L-6 6 L-2 4 L-4 8 L-10 10 Z" fill="#f4d3a1"/>
-          <circle cx="13" cy="11" r="1.6" fill="#ff4d4d"/>
+
+        <!-- Driver (simple but with scarf) -->
+        <g transform="translate(140,14)">
+          <!-- head -->
+          <circle cx="0" cy="6" r="6" fill="#ffd9bd" />
+          <!-- hat -->
+          <path d="M-7 -2 Q0 -10 8 -2" fill="#c21b2b" />
+          <circle cx="6" cy="-3" r="2" fill="#fff"/>
+          <!-- scarf -->
+          <path d="M-6 12 C-4 14 2 14 6 12 L6 14 C2 16 -4 16 -6 14 Z" fill="#d84b3f"/>
         </g>
-        <!-- sparkle -->
-        <circle cx="170" cy="42" r="2.2" fill="#ffffff"/>
+
+        <!-- Reindeer silhouettes with harness -->
+        <g transform="translate(208,-6) scale(0.9)">
+          <!-- Reindeer 1 -->
+          <g transform="translate(0,18)">
+            <path d="M0 6 L6 0 L12 2 L16 8 L20 6 L24 10 L18 14 L14 22 L6 20 Z" fill="url(#deerFill)" />
+            <path d="M-6 4 L-2 -4 L2 -2 L6 4" fill="url(#deerFill)" opacity="0.95"/>
+            <!-- antlers -->
+            <path d="M2 -2 L6 -6 M4 -2 L8 -8 M0 -2 L-4 -6" stroke="#6a4530" stroke-width="0.9" stroke-linecap="round" fill="none"/>
+            <!-- nose -->
+            <circle cx="18" cy="8" r="1.4" fill="#c43a2a" />
+            <!-- harness -->
+            <path d="M10 6 C18 8 30 6 44 8" stroke="#703300" stroke-width="1" fill="none" stroke-linecap="round"/>
+          </g>
+
+          <!-- Reindeer 2 -->
+          <g transform="translate(34,12) scale(0.95)">
+            <path d="M0 8 L6 2 L12 4 L16 10 L20 8 L24 12 L18 16 L14 24 L6 22 Z" fill="url(#deerFill)" />
+            <path d="M-6 6 L-2 -2 L2 0 L6 6" fill="url(#deerFill)" opacity="0.93"/>
+            <path d="M2 0 L6 -6 M4 0 L8 -8" stroke="#6a4530" stroke-width="0.85" stroke-linecap="round" fill="none"/>
+            <circle cx="18" cy="10" r="1.4" fill="#c43a2a" />
+            <path d="M10 8 C20 10 36 8 52 10" stroke="#703300" stroke-width="1" fill="none" stroke-linecap="round"/>
+          </g>
+
+          <!-- Reindeer 3 -->
+          <g transform="translate(68,18) scale(0.88)">
+            <path d="M0 6 L6 0 L12 2 L16 8 L20 6 L24 10 L18 14 L14 22 L6 20 Z" fill="url(#deerFill)" />
+            <path d="M-6 4 L-2 -4 L2 -2 L6 4" fill="url(#deerFill)" opacity="0.92"/>
+            <path d="M2 -2 L6 -6 M4 -2 L8 -8" stroke="#6a4530" stroke-width="0.85" stroke-linecap="round" fill="none"/>
+            <circle cx="18" cy="8" r="1.4" fill="#c43a2a" />
+            <path d="M10 6 C22 8 40 6 60 8" stroke="#703300" stroke-width="1" fill="none" stroke-linecap="round"/>
+          </g>
+        </g>
+
+        <!-- Reins + Bells -->
+        <g transform="translate(150,34)" stroke="#6a2f13" stroke-width="0.9" stroke-linecap="round" fill="none">
+          <path d="M0 0 C18 6 70 6 96 8" />
+          <path d="M4 0 C22 8 84 10 106 14" opacity="0.7" />
+          <!-- small bells along rein -->
+          <circle cx="28" cy="6" r="1.2" fill="#ffd166" stroke="#b07a00" stroke-width="0.3"/>
+          <circle cx="58" cy="7" r="1.2" fill="#ffd166" stroke="#b07a00" stroke-width="0.3"/>
+          <circle cx="86" cy="8" r="1.2" fill="#ffd166" stroke="#b07a00" stroke-width="0.3"/>
+        </g>
+
+        <!-- small sparkle to add motion -->
+        <g transform="translate(90,36)">
+          <circle cx="0" cy="0" r="2.2" fill="#ffffff" opacity="0.95"/>
+        </g>
       </g>
     </svg>
   </div>
@@ -626,9 +709,10 @@
 
       snowPileEl.style.height = Math.round(currentPileHeight) + "px";
 
-      const targetTop = Math.min(MAX_TOP_HEIGHT, currentPileHeight * TOP_SCALE);
-      const topHeight = currentPileHeight > 6 ? Math.round(targetTop) : 0;
-      snowPileTopEl.style.height = topHeight + "px";
+      // Keep the padlock top pile hidden so the lock stays clear
+      if (snowPileTopEl) {
+        snowPileTopEl.style.height = "0px";
+      }
 
       const sheen = snowPileEl.querySelector(".snow-pile-sheen");
       if (sheen) sheen.style.opacity = 0.25 + (currentPileHeight / MAX_PILE_HEIGHT) * 0.75;
