@@ -747,6 +747,8 @@
 
     /* Tilt logic – now only moves falling layers, not the ground pile
        Improved detection and fallbacks so tilt works on more devices.
+       Fixes: better event registration on iOS, retries both deviceorientation and devicemotion,
+       shows a small toast when orientation events begin, and disables button with a helpful label if unavailable.
     */
     const reduceMotion =
       window.matchMedia &&
@@ -773,15 +775,67 @@
       let tiltActive = false;
       const isIOSWithPermission = typeof DeviceOrientationEvent !== "undefined" && typeof DeviceOrientationEvent.requestPermission === "function";
 
+      // detect if addEventListener supports options (passive)
+      let opts = false;
+      try {
+        let supported = false;
+        const testOpts = Object.defineProperty({}, 'passive', { get() { supported = true; } });
+        window.addEventListener('test', null, testOpts);
+        window.removeEventListener('test', null, testOpts);
+        opts = supported ? { passive: true } : false;
+      } catch (err) {
+        opts = false;
+      }
+
+      let gotOrientation = false;
+      let failTimer = null;
+
+      function showSmallToast(text) {
+        const t = document.createElement('div');
+        t.textContent = text;
+        Object.assign(t.style, {
+          position: 'fixed',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          bottom: '22%',
+          background: 'rgba(0,0,0,0.86)',
+          color: '#fff',
+          padding: '8px 12px',
+          borderRadius: '10px',
+          zIndex: 99999,
+          fontSize: '14px',
+          boxShadow: '0 8px 24px rgba(0,0,0,0.45)',
+          transition: 'opacity .35s ease, transform .25s ease',
+          opacity: '1',
+        });
+        document.body.appendChild(t);
+        setTimeout(() => {
+          t.style.opacity = '0';
+          t.style.transform = 'translateX(-50%) translateY(6px)';
+          setTimeout(() => { if (t && t.parentNode) t.parentNode.removeChild(t); }, 350);
+        }, 1100);
+      }
+
       function onDeviceOrientation(event) {
         if (!tiltActive) return;
 
-        // gamma: left-to-right tilt [-90,90], beta: front-to-back [-180,180]
-        const gamma = typeof event.gamma === "number" ? event.gamma : 0;
-        const beta = typeof event.beta === "number" ? event.beta : 0;
+        const gamma = typeof event.gamma === "number" ? event.gamma : null;
+        const beta = typeof event.beta === "number" ? event.beta : null;
 
-        const targetGamma = clamp(gamma, -30, 30);
-        const targetBeta = clamp(beta, -30, 30);
+        if (gamma !== null || beta !== null) {
+          if (!gotOrientation) {
+            gotOrientation = true;
+            showSmallToast('Tilt active');
+            if (failTimer) { clearTimeout(failTimer); failTimer = null; }
+          }
+        }
+
+        // fallback to 0 when not numeric so we can continue to render
+        const g = gamma === null ? 0 : gamma;
+        const b = beta === null ? 0 : beta;
+
+        const targetGamma = clamp(g, -30, 30);
+        const targetBeta = clamp(b, -30, 30);
 
         smoothedGamma += (targetGamma - smoothedGamma) * 0.12;
         smoothedBeta += (targetBeta - smoothedBeta) * 0.12;
@@ -796,15 +850,19 @@
 
       function onDeviceMotionFallback(ev) {
         if (!tiltActive) return;
-        // Use accelerationIncludingGravity as a fallback to estimate orientation
         const ag = ev.accelerationIncludingGravity || ev.acceleration || { x:0, y:0, z:0 };
-        // rough mapping of acceleration to tilt; this is a fallback and intentionally low-pass filtered
         const gx = ag.x || 0;
         const gy = ag.y || 0;
 
         // estimate gamma/beta from gravity vector (approx)
         const estimatedGamma = clamp(-gx * 20, -30, 30);
         const estimatedBeta = clamp(gy * 20, -30, 30);
+
+        if (!gotOrientation) {
+          gotOrientation = true;
+          showSmallToast('Tilt active');
+          if (failTimer) { clearTimeout(failTimer); failTimer = null; }
+        }
 
         smoothedGamma += (estimatedGamma - smoothedGamma) * 0.12;
         smoothedBeta += (estimatedBeta - smoothedBeta) * 0.12;
@@ -817,32 +875,90 @@
         if (snowFront) snowFront.style.backgroundPosition = `${xNorm * 20}px ${yNorm * 8}px`;
       }
 
+      // helper to (safely) add listeners with our opts fallback
+      function addOrientationListeners() {
+        try {
+          window.addEventListener('deviceorientation', onDeviceOrientation, opts);
+        } catch (e) {
+          window.addEventListener('deviceorientation', onDeviceOrientation, false);
+        }
+        try {
+          window.addEventListener('deviceorientationabsolute', onDeviceOrientation, opts);
+        } catch (e) {
+          window.addEventListener('deviceorientationabsolute', onDeviceOrientation, false);
+        }
+        try {
+          window.addEventListener('devicemotion', onDeviceMotionFallback, opts);
+        } catch (e) {
+          window.addEventListener('devicemotion', onDeviceMotionFallback, false);
+        }
+      }
+
+      function removeOrientationListeners() {
+        try {
+          window.removeEventListener('deviceorientation', onDeviceOrientation, opts);
+        } catch (e) {
+          window.removeEventListener('deviceorientation', onDeviceOrientation, false);
+        }
+        try {
+          window.removeEventListener('deviceorientationabsolute', onDeviceOrientation, opts);
+        } catch (e) {
+          window.removeEventListener('deviceorientationabsolute', onDeviceOrientation, false);
+        }
+        try {
+          window.removeEventListener('devicemotion', onDeviceMotionFallback, opts);
+        } catch (e) {
+          window.removeEventListener('devicemotion', onDeviceMotionFallback, false);
+        }
+      }
+
       async function enableTilt() {
         // On iOS 13+ permission is required; request it. On Android/others, just enable.
         if (isIOSWithPermission) {
+          // Add listeners before/after permission to maximize chances of receiving events
+          addOrientationListeners();
           try {
             const state = await DeviceOrientationEvent.requestPermission();
             if (state !== "granted") {
               tiltButton.textContent = "Tilt permission denied";
               tiltButton.disabled = true;
+              removeOrientationListeners();
               return;
             }
           } catch (err) {
+            // If requestPermission throws, assume not available
             tiltButton.textContent = "Tilt not available";
             tiltButton.disabled = true;
+            removeOrientationListeners();
             return;
           }
+        } else {
+          // Non-iOS: just add listeners
+          addOrientationListeners();
         }
 
+        // Now mark active and wait briefly to confirm events come through
         tiltActive = true;
         tiltButton.classList.add("active");
         tiltButton.textContent = "Tilt snow enabled";
 
-        // add multiple listeners for broader device support
-        window.addEventListener("deviceorientation", onDeviceOrientation, true);
-        window.addEventListener("deviceorientationabsolute", onDeviceOrientation, true);
-        // devicemotion fallback provides acceleration data when orientation events aren't available
-        window.addEventListener("devicemotion", onDeviceMotionFallback, true);
+        // if we don't receive any orientation-ish events within a second, mark as unavailable
+        gotOrientation = false;
+        if (failTimer) clearTimeout(failTimer);
+        failTimer = setTimeout(() => {
+          if (!gotOrientation) {
+            // nothing arrived — disable and inform user
+            tiltButton.textContent = "Tilt not available";
+            tiltButton.disabled = true;
+            tiltActive = false;
+            removeOrientationListeners();
+            smoothedBeta = smoothedGamma = 0;
+            if (snowBack) snowBack.style.backgroundPosition = "";
+            if (snowMid) snowMid.style.backgroundPosition = "";
+            if (snowFront) snowFront.style.backgroundPosition = "";
+          }
+          failTimer = null;
+        }, 1200);
       }
 
       tiltButton.addEventListener("click", () => {
@@ -856,6 +972,8 @@
           if (snowBack) snowBack.style.backgroundPosition = "";
           if (snowMid) snowMid.style.backgroundPosition = "";
           if (snowFront) snowFront.style.backgroundPosition = "";
+          removeOrientationListeners();
+          if (failTimer) { clearTimeout(failTimer); failTimer = null; }
         }
       });
     }
@@ -920,6 +1038,57 @@
     startSnowAccumulation();
     setupDials();
     setupTiltSnow();
+
+    /* Small easter egg: triple-tap the shackle to show "Oi, don't cheat" */
+    (function setupShackleEasterEgg() {
+      const shackleEl = document.querySelector('.shackle');
+      if (!shackleEl) return;
+
+      let tapCount = 0;
+      let tapTimer = null;
+      const TAP_WINDOW = 600; // ms
+
+      function showCheatToast() {
+        // create a temporary toast so we don't interfere with the unlock message
+        const toast = document.createElement('div');
+        toast.textContent = "Oi, don't cheat";
+        Object.assign(toast.style, {
+          position: 'fixed',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          bottom: '22%',
+          background: 'rgba(0,0,0,0.86)',
+          color: '#fff',
+          padding: '10px 14px',
+          borderRadius: '10px',
+          zIndex: 99999,
+          fontSize: '15px',
+          boxShadow: '0 8px 24px rgba(0,0,0,0.45)',
+          transition: 'opacity .35s ease, transform .25s ease',
+          opacity: '1',
+        });
+        document.body.appendChild(toast);
+
+        // auto-hide
+        setTimeout(() => {
+          toast.style.opacity = '0';
+          toast.style.transform = 'translateX(-50%) translateY(6px)';
+          setTimeout(() => { if (toast && toast.parentNode) toast.parentNode.removeChild(toast); }, 350);
+        }, 1400);
+      }
+
+      shackleEl.addEventListener('pointerdown', (e) => {
+        tapCount++;
+        if (tapTimer) clearTimeout(tapTimer);
+        tapTimer = setTimeout(() => { tapCount = 0; tapTimer = null; }, TAP_WINDOW);
+
+        if (tapCount === 3) {
+          tapCount = 0;
+          if (tapTimer) { clearTimeout(tapTimer); tapTimer = null; }
+          showCheatToast();
+        }
+      });
+    })();
   </script>
 </body>
 </html>
