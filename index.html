@@ -147,9 +147,13 @@
       height:0;
       z-index:5;
       pointer-events:none;
-      overflow:visible;
-      transition:height 420ms ease-out;
+      /* hide the top pile fully when height is zero so it doesn't cover the lock on small screens */
+      overflow:hidden;
+      transition:height 420ms ease-out, opacity 280ms ease, transform 280ms ease;
+      opacity:0;
+      transform-origin:50% 100%;
     }
+    .snow-pile-top.show { opacity:1; }
     .snow-pile-top svg { width:100%; height:100%; display:block; overflow:visible; }
     .snow-pile-top-inner { pointer-events:none; }
 
@@ -709,9 +713,18 @@
 
       snowPileEl.style.height = Math.round(currentPileHeight) + "px";
 
-      // Keep the padlock top pile hidden so the lock stays clear
+      // Keep the padlock top pile hidden until there's significant accumulation
       if (snowPileTopEl) {
-        snowPileTopEl.style.height = "0px";
+        // ensure the top pile is fully hidden while height is small (prevents initial cover on phones)
+        if (currentPileHeight < MAX_PILE_HEIGHT * 0.6) {
+          snowPileTopEl.style.height = "0px";
+          snowPileTopEl.classList.remove("show");
+        } else {
+          // show top pile progressively once the ground pile is reasonably high
+          const tHeight = Math.round(Math.min(MAX_TOP_HEIGHT, (currentPileHeight - (MAX_PILE_HEIGHT * 0.6)) / (MAX_PILE_HEIGHT * 0.4) * MAX_TOP_HEIGHT));
+          snowPileTopEl.style.height = tHeight + "px";
+          if (tHeight > 0) snowPileTopEl.classList.add("show");
+        }
       }
 
       const sheen = snowPileEl.querySelector(".snow-pile-sheen");
@@ -724,10 +737,17 @@
       currentPileHeight = 0;
       lastAccumTs = null;
       accumulationActive = true;
+      // ensure the top pile is hidden at start so phones don't show it immediately
+      if (snowPileTopEl) {
+        snowPileTopEl.style.height = "0px";
+        snowPileTopEl.classList.remove("show");
+      }
       requestAnimationFrame(accumulateStep);
     }
 
-    /* Tilt logic – now only moves falling layers, not the ground pile */
+    /* Tilt logic – now only moves falling layers, not the ground pile
+       Improved detection and fallbacks so tilt works on more devices.
+    */
     const reduceMotion =
       window.matchMedia &&
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -737,14 +757,26 @@
 
     function setupTiltSnow() {
       if (!tiltButton) return;
-      const hasOrientation = "DeviceOrientationEvent" in window;
-      if (!hasOrientation || reduceMotion) { tiltButton.style.display = "none"; return; }
+
+      // improved feature detection: some browsers expose ondeviceorientation, some expose DeviceOrientationEvent
+      const hasOrientation =
+        ('DeviceOrientationEvent' in window) ||
+        ('ondeviceorientation' in window) ||
+        ('ondeviceorientationabsolute' in window);
+
+      if (!hasOrientation || reduceMotion) {
+        // hide the button if tilt isn't available or user prefers reduced motion
+        tiltButton.style.display = "none";
+        return;
+      }
 
       let tiltActive = false;
+      const isIOSWithPermission = typeof DeviceOrientationEvent !== "undefined" && typeof DeviceOrientationEvent.requestPermission === "function";
 
       function onDeviceOrientation(event) {
         if (!tiltActive) return;
 
+        // gamma: left-to-right tilt [-90,90], beta: front-to-back [-180,180]
         const gamma = typeof event.gamma === "number" ? event.gamma : 0;
         const beta = typeof event.beta === "number" ? event.beta : 0;
 
@@ -757,23 +789,60 @@
         const xNorm = smoothedGamma / 30;
         const yNorm = smoothedBeta / 30;
 
-        snowBack.style.backgroundPosition = `${xNorm * 8}px ${yNorm * 4}px`;
-        snowMid.style.backgroundPosition = `${xNorm * 14}px ${yNorm * 6}px`;
-        snowFront.style.backgroundPosition = `${xNorm * 20}px ${yNorm * 8}px`;
-        /* ground pile left perfectly horizontal */
+        if (snowBack) snowBack.style.backgroundPosition = `${xNorm * 8}px ${yNorm * 4}px`;
+        if (snowMid) snowMid.style.backgroundPosition = `${xNorm * 14}px ${yNorm * 6}px`;
+        if (snowFront) snowFront.style.backgroundPosition = `${xNorm * 20}px ${yNorm * 8}px`;
+      }
+
+      function onDeviceMotionFallback(ev) {
+        if (!tiltActive) return;
+        // Use accelerationIncludingGravity as a fallback to estimate orientation
+        const ag = ev.accelerationIncludingGravity || ev.acceleration || { x:0, y:0, z:0 };
+        // rough mapping of acceleration to tilt; this is a fallback and intentionally low-pass filtered
+        const gx = ag.x || 0;
+        const gy = ag.y || 0;
+
+        // estimate gamma/beta from gravity vector (approx)
+        const estimatedGamma = clamp(-gx * 20, -30, 30);
+        const estimatedBeta = clamp(gy * 20, -30, 30);
+
+        smoothedGamma += (estimatedGamma - smoothedGamma) * 0.12;
+        smoothedBeta += (estimatedBeta - smoothedBeta) * 0.12;
+
+        const xNorm = smoothedGamma / 30;
+        const yNorm = smoothedBeta / 30;
+
+        if (snowBack) snowBack.style.backgroundPosition = `${xNorm * 8}px ${yNorm * 4}px`;
+        if (snowMid) snowMid.style.backgroundPosition = `${xNorm * 14}px ${yNorm * 6}px`;
+        if (snowFront) snowFront.style.backgroundPosition = `${xNorm * 20}px ${yNorm * 8}px`;
       }
 
       async function enableTilt() {
-        if (typeof DeviceOrientationEvent !== "undefined" && typeof DeviceOrientationEvent.requestPermission === "function") {
+        // On iOS 13+ permission is required; request it. On Android/others, just enable.
+        if (isIOSWithPermission) {
           try {
             const state = await DeviceOrientationEvent.requestPermission();
-            if (state !== "granted") { tiltButton.textContent = "Tilt permission denied"; tiltButton.disabled = true; return; }
-          } catch (err) { tiltButton.textContent = "Tilt not available"; tiltButton.disabled = true; return; }
+            if (state !== "granted") {
+              tiltButton.textContent = "Tilt permission denied";
+              tiltButton.disabled = true;
+              return;
+            }
+          } catch (err) {
+            tiltButton.textContent = "Tilt not available";
+            tiltButton.disabled = true;
+            return;
+          }
         }
+
         tiltActive = true;
         tiltButton.classList.add("active");
         tiltButton.textContent = "Tilt snow enabled";
-        window.addEventListener("deviceorientation", onDeviceOrientation);
+
+        // add multiple listeners for broader device support
+        window.addEventListener("deviceorientation", onDeviceOrientation, true);
+        window.addEventListener("deviceorientationabsolute", onDeviceOrientation, true);
+        // devicemotion fallback provides acceleration data when orientation events aren't available
+        window.addEventListener("devicemotion", onDeviceMotionFallback, true);
       }
 
       tiltButton.addEventListener("click", () => {
@@ -784,9 +853,9 @@
           tiltButton.classList.remove("active");
           tiltButton.textContent = "Enable tilt snow";
           smoothedBeta = smoothedGamma = 0;
-          snowBack.style.backgroundPosition = "";
-          snowMid.style.backgroundPosition = "";
-          snowFront.style.backgroundPosition = "";
+          if (snowBack) snowBack.style.backgroundPosition = "";
+          if (snowMid) snowMid.style.backgroundPosition = "";
+          if (snowFront) snowFront.style.backgroundPosition = "";
         }
       });
     }
